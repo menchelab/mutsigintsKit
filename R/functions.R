@@ -1124,6 +1124,11 @@ concat_networks = function(network.lists, tissue, filter.list) {
 
     adj.net = as.matrix(as_adjacency_matrix(ts.multi.graph)) * 0
     for(i in 1:nrow(edge.info)) {
+      if (adj.net[edge.info[i, "from"], edge.info[i, "to"]] != 0 ) {
+        if (adj.net[edge.info[i, "from"], edge.info[i, "to"]] *  edge.info[i, "weight_"] < 0) {
+          cat("\n####################i = ",i, " the signs differ.\n")
+        }
+      }
       adj.net[edge.info[i, "from"], edge.info[i, "to"]] =
         adj.net[edge.info[i, "from"], edge.info[i, "to"]] + edge.info[i, "weight_"]
     }
