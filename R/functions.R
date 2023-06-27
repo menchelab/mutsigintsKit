@@ -2448,8 +2448,8 @@ plot_sigint_forest = function(data, log.HR = TRUE) {
 #' @export
 
 plot_mixed_layout = function(graph.input,
-                             central.nodes = c("Ageing" , "SBS5", "SBS40"),
-                             circular.node.order = NULL, edge.width.breaks = NULL) {
+                                   central.nodes = c("Ageing" , "SBS5", "SBS40"),
+                                   circular.node.order = NULL, edge.width.breaks = NULL) {
 
 
   all.nodes = graph.input %>%
@@ -2495,7 +2495,7 @@ plot_mixed_layout = function(graph.input,
   node.coordinates = rbind(lay.central, lay.circle) %>% as.data.frame() %>%
     arrange(factor(name, levels = all.nodes))
   pp = graph.input %>% ggraph(x = node.coordinates$x, y = node.coordinates$y) +
-    geom_edge_link (aes(color = int.type, width = count), alpha = 0.4) +
+    geom_edge_parallel (aes(color = int.type, width = count), alpha = 0.4) +
     scale_edge_width_continuous(breaks = edge.width.breaks, range = c(0.3,3)) +
     geom_node_point(aes(fill = annot.class),
                     color = "gray30",
