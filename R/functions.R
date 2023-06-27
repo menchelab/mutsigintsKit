@@ -406,7 +406,7 @@ pcawg_sig_pathway_int = function(sigs.input,
   return(tissue.odds.mats)
 }
 
-# A ggheatmap wrapper for interaction matrix returns
+#' A ggheatmap wrapper for interaction matrix returns
 #' @param metric.matrix the input matrix
 #' @description All other parameters are passed to ggheatmap
 #' \link[ggheatmap]{ggheatmap}
@@ -703,6 +703,7 @@ plot_all_counts = function(list.of.int.elems, threshold = 0.1, min.abssum = 1,
 
 
 ### bipartite (needs more work)
+#' Bipartite network test
 #' @param gg.df Dataframe returned by summarize_ints_to_df
 #' @return gggraph with sugiyama layout
 #' @export
@@ -1087,7 +1088,7 @@ get_common_sigs = function(metric.list, metric, outdir, threshold = 0.2) {
 }
 
 
-#'
+#' Summarize different metric outputs for an interaction
 #' @param network.lists The input list.
 #' @param tissue Tissue to be extracted.
 #' @param filter.list A list of metric values to be filtered out. The list
