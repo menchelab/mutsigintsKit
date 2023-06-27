@@ -1,5 +1,5 @@
 # Global package variables
 
-sig.annotations.path = system.file("data/signature.annotations.tsv", "mutsigintsKit")
+sig.annotations.path = system.file("data/signature_annotations.tsv", "mutsigintsKit")
 
-signature.annotations = read.delim(here("data/raw", "signature_annotations.tsv"))
+signature.annotations = read.delim(sig.annotations.path)
