@@ -11,5 +11,5 @@
 #' }
 #'
 #' @examples
-#' data(signature.annotations)
+#' head(signature.annotations)
 "signature.annotations"
