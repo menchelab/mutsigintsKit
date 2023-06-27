@@ -23,6 +23,6 @@ Signature annotations based on cosmic and curated by
 hakobyan et al., 2023
 }
 \examples{
-data(signature.annotations)
+head(signature.annotations)
 }
 \keyword{datasets}
