@@ -2429,3 +2429,97 @@ plot_sigint_forest = function(data, log.HR = TRUE) {
           axis.ticks.y = element_blank())
   return(pp)
 }
+
+
+#' Plot interaction network with a mixed layout, where the clock-like
+#' signatures are in the middle and all the other signatures are on a circular
+#' layout.
+#' @param graph.input The network of interactions as a tbl_graph
+#' @param central.nodes The nodes that should be in the center.
+#' Default: c("Ageing" , "SBS5", "SBS40")
+#' @param circular.node.order Can be used to specify the order of the nodes in the
+#' outer layer. Default: NULL
+#' @param edge.width.breaks Can be used to manually specify the edge widths.
+#' Default: NULL
+#' @details Beware!!! The node colors are predefined for different etiology groups.
+#' The etiology groups are derived from signature.annotations object
+#' @return a ggraph plot of the interaction network.
+#' @export
+
+plot_mixed_layout = function(graph.input,
+                             central.nodes = c("Ageing" , "SBS5", "SBS40"),
+                             circular.node.order = NULL, edge.width.breaks = NULL) {
+
+
+  all.nodes = graph.input %>%
+    activate(nodes) %>%
+    as.data.frame() %>%
+    pull(name)
+
+  graph.input = graph.input %>%
+    activate(nodes) %>%
+    mutate(annot.class = signature.annotations %>%
+             filter(Annotation %in% all.nodes) %>%
+             select(Origin, Annotation) %>%
+             unique() %>%
+             arrange(factor(Annotation, levels = all.nodes)) %>%
+             pull(Origin))
+
+  circle.nodes = setdiff(all.nodes, central.nodes)
+  #
+  # lay1 = layout_in_circle(induced_subgraph(graph.input, circle.nodes))
+  # lay2 = layout_nicely(induced_subgraph(graph.input, central.nodes))
+  # lay3 <- rbind(lay1 + 2, lay2 *  10)
+  #
+
+  central.subgraph = graph.input %>%
+    to_subgraph(name %in% central.nodes, subset_by = "nodes")
+
+  circle.subgraph = graph.input %>%
+    to_subgraph(name %in% circle.nodes, subset_by = "nodes")
+
+  lay.central = create_layout(central.subgraph$subgraph,
+                              layout = "stress")
+
+  if (is.null(circular.node.order)) {
+    lay.circle = create_layout(circle.subgraph$subgraph,
+                               layout = "circle")
+  } else {
+    lay.circle = create_layout(circle.subgraph$subgraph,
+                               layout = "circle", order = circular.node.order)
+  }
+
+  # plot.igraph(pcawg.sig.sig.net, layout=lay3, vertex.size=8)
+
+  node.coordinates = rbind(lay.central, lay.circle) %>% as.data.frame() %>%
+    arrange(factor(name, levels = all.nodes))
+  pp = graph.input %>% ggraph(x = node.coordinates$x, y = node.coordinates$y) +
+    geom_edge_link (aes(color = int.type, width = count), alpha = 0.4) +
+    scale_edge_width_continuous(breaks = edge.width.breaks, range = c(0.3,3)) +
+    geom_node_point(aes(fill = annot.class),
+                    color = "gray30",
+                    size = 4,
+                    shape = 21,
+                    stroke = 0.6) +
+    geom_node_label(aes(label = name#, fill = type
+    ),
+    color = "gray10",
+    label.size = 0,
+    hjust = ifelse(node.coordinates[,1] > 0, -0.25, 1.25),
+    vjust = ifelse(node.coordinates[,2] > 0, -0.3, 1.15),
+    # hjust = node.coordinates[ ,1] * 1.1,
+    # vjust = node.coordinates[ ,2] * 1.1,
+    label.r = unit(0.2, "lines"),
+    label.padding = unit(0, "lines"),
+    nudge_y = 0) +
+    scale_edge_color_manual(values = c("positive" = "red4",
+                                       "negative" = "dodgerblue3")) +
+    scale_fill_manual(values = c("Endogenous" = "#CAE7B9",
+                                 "Environmental" = "#f3de8a",
+                                 # "Clock-like" = "#ff934f",
+                                 "Clock-like" = "white",
+                                 "Unknown" = "#4e6151") ) +
+    theme_void() +
+    theme(legend.position = "right", legend.title = element_blank() )
+  return(pp)
+}
