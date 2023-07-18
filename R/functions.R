@@ -2495,7 +2495,7 @@ plot_mixed_layout = function(graph.input,
   node.coordinates = rbind(lay.central, lay.circle) %>% as.data.frame() %>%
     arrange(factor(name, levels = all.nodes))
   pp = graph.input %>% ggraph(x = node.coordinates$x, y = node.coordinates$y) +
-    geom_edge_parallel (aes(color = int.type, width = count), alpha = 0.4) +
+    geom_edge_parallel (aes(color = int.type, width = count), alpha = 0.6) +
     scale_edge_width_continuous(breaks = edge.width.breaks, range = c(0.3,3)) +
     geom_node_point(aes(fill = annot.class),
                     color = "gray30",
