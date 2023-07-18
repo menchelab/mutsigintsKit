@@ -2524,3 +2524,43 @@ plot_mixed_layout = function(graph.input,
     theme(legend.position = "right", legend.title = element_blank() )
   return(pp)
 }
+
+#' Removes identical edges between two nodes
+#' @param input.graph Input graph
+#' @param summary.col This variable indicates the column, which should be summarized.
+#' When specified, all the edges between the same nodes, which have different values
+#' for this column are summarized, a new edge variable `count` is added and
+#' the values of the specificed column are collapsed and stored in the column called
+#' `summedList`
+#' @export
+
+graph_unique_edges = function(input.graph, summary.col = NULL) {
+  summary.col = "tissue"
+
+  new.edges = input.graph %>%
+    activate(edges) %>%
+    as.data.frame()
+
+  new.edges$minmax = purrr::pmap(new.edges, ~ paste0(sort(c(...)), collapse = "-") )  %>%
+    unlist()
+
+  new.edges = new.edges %>% distinct(minmax, .keep_all = TRUE) %>%
+    select(-minmax) %>%
+    as_tibble()
+
+  if (!is.null(summary.col)) {
+    new.edges = new.edges %>%
+      group_by(across(c(-!!sym(summary.col)))) %>%
+      dplyr::summarize(count = n(),
+                       summedList = toString(sort(unique(!!sym(summary.col) ) ) ) ,
+      ) %>%
+      ungroup()
+  }
+
+
+  output.graph = tbl_graph(nodes = input.graph %>% activate(nodes) %>% as.data.frame(),
+                           edges = new.edges,
+                           directed = FALSE)
+
+  return(output.graph)
+}
