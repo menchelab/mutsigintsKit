@@ -2564,3 +2564,30 @@ graph_unique_edges = function(input.graph, summary.col = NULL) {
 
   return(output.graph)
 }
+
+### interactive network plot
+#
+# bull.graph = make_graph("bull") %>% as_tbl_graph()
+#
+# layout.type = "auto"
+#
+# pp = ggraph(bull.graph, layout = layout.type) +
+#   geom_node_point() +
+#   geom_edge_link()
+#
+# edge.connections = get_edges()(create_layout(bull.graph, layout = layout.type) )
+#
+# pp.int = pp +
+#   geom_point_interactive(aes(x, y), data = pp$data, size = 5,
+#                          tooltip = TRUE) +
+#   geom_segment_interactive(aes(x, y, xend, yend), data = edge.connections,
+#                            tooltip = "blah")
+#
+# girafe(ggobj = pp.int,
+#        options = list(
+#          opts_hover(css = "fill:green; stroke: blue;"),
+#          opts_hover_inv(css = "opacity:0.2;"),
+#          opts_zoom(max = 10)
+#        ))
+#
+
