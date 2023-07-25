@@ -2590,4 +2590,30 @@ graph_unique_edges = function(input.graph, summary.col = NULL) {
 #        ))
 #
 
- = function
+plot_mixed_layout_interactive = function(pp, input.graph, layout.type = "auto") {
+
+  ggbuild = ggplot_build(pp)
+
+  edge.connections = get_edges()(create_layout(input.graph, layout = layout.type) )
+
+
+  pp.int = pp +
+    geom_point_interactive(aes(x, y), data = pp$data, size = 5,
+                           tooltip = TRUE) +
+    geom_segment_interactive(aes(x, y, xend, yend), data = edge.connections,
+                             tooltip = "blah")
+
+
+  pp.int = ggplot() +
+    geom_point_interactive(aes(x = x, y = y), data = pp$data, size = 5,
+                           tooltip = TRUE) +
+    geom_segment_interactive(aes(x = x, y = y, xend = xend, yend = yend, tooltip = "blah"),
+                             data = edge.connections)
+
+  girafe(ggobj = pp.int,
+         options = list(
+           opts_hover(css = "fill:green; stroke: blue;"),
+           opts_hover_inv(css = "opacity:0.2;"),
+           opts_zoom(max = 10)
+         ))
+}
