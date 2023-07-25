@@ -2431,7 +2431,6 @@ plot_sigint_forest = function(data, log.HR = TRUE) {
   return(pp)
 }
 
-
 #' Plot interaction network with a mixed layout, where the clock-like
 #' signatures are in the middle and all the other signatures are on a circular
 #' layout.
@@ -2522,7 +2521,7 @@ plot_mixed_layout = function(graph.input,
                                  "Unknown" = "#4e6151") ) +
     theme_void() +
     theme(legend.position = "right", legend.title = element_blank() )
-  return(pp)
+  return(list (pp = pp, graph.input = graph.input))
 }
 
 #' Removes identical edges between two nodes
@@ -2591,3 +2590,4 @@ graph_unique_edges = function(input.graph, summary.col = NULL) {
 #        ))
 #
 
+ = function
