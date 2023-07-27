@@ -2564,56 +2564,64 @@ graph_unique_edges = function(input.graph, summary.col = NULL) {
   return(output.graph)
 }
 
-### interactive network plot
-#
-# bull.graph = make_graph("bull") %>% as_tbl_graph()
-#
-# layout.type = "auto"
-#
-# pp = ggraph(bull.graph, layout = layout.type) +
-#   geom_node_point() +
-#   geom_edge_link()
-#
-# edge.connections = get_edges()(create_layout(bull.graph, layout = layout.type) )
-#
-# pp.int = pp +
-#   geom_point_interactive(aes(x, y), data = pp$data, size = 5,
-#                          tooltip = TRUE) +
-#   geom_segment_interactive(aes(x, y, xend, yend), data = edge.connections,
-#                            tooltip = "blah")
-#
-# girafe(ggobj = pp.int,
-#        options = list(
-#          opts_hover(css = "fill:green; stroke: blue;"),
-#          opts_hover_inv(css = "opacity:0.2;"),
-#          opts_zoom(max = 10)
-#        ))
-#
+#' interactive network plot
+#' @param pp ggraph output from plot_mixed_layout. In fact any layout would work.
+#' @export
 
-plot_mixed_layout_interactive = function(pp, input.graph, layout.type = "auto") {
+plot_layout_interactive = function(pp) {
 
   ggbuild = ggplot_build(pp)
 
-  edge.connections = get_edges()(create_layout(input.graph, layout = layout.type) )
+  edge.connections = get_edges()(pp$data)
 
+  edge.connections.agg = edge.connections %>%
+    group_by(x, y, xend, yend) %>%
+    mutate(edge.label = paste0( paste0(int.type, ":", summedList),
+                                collapse = "\n"))
 
   pp.int = pp +
-    geom_point_interactive(aes(x, y), data = pp$data, size = 5,
-                           tooltip = TRUE) +
-    geom_segment_interactive(aes(x, y, xend, yend), data = edge.connections,
-                             tooltip = "blah")
+    geom_point_interactive(aes(x, y),
+                           data = pp$data, size = 5, alpha = 0) +
+    geom_segment_interactive(aes(x = x, y = y, xend = xend, yend = yend,
+                                 tooltip = edge.label),
+                             size = 2, alpha = 0.1, color = "gray60",
+                             data = edge.connections.agg)
 
+  # pp.int = ggplot() +
+  #   geom_point_interactive(aes(x = x, y = y), data = pp$data, size = 5,
+  #                          tooltip = TRUE) +
+  #  interactive_segments_grob(aes(x0 = x, y0 = y, x1 = xend, y1 = yend, tooltip = "blah"),
+  #                            data = edge.connections)
 
-  pp.int = ggplot() +
-    geom_point_interactive(aes(x = x, y = y), data = pp$data, size = 5,
-                           tooltip = TRUE) +
-    geom_segment_interactive(aes(x = x, y = y, xend = xend, yend = yend, tooltip = "blah"),
-                             data = edge.connections)
-
-  girafe(ggobj = pp.int,
+  ppiraph = girafe(ggobj = pp.int,
          options = list(
-           opts_hover(css = "fill:green; stroke: blue;"),
-           opts_hover_inv(css = "opacity:0.2;"),
-           opts_zoom(max = 10)
+           # opts_hover(css = girafe_css(
+           #     css = "fill:orange; stroke:red",
+           #     text = "stroke:blue; font-size: larger",
+           #     line = "fill:black; stroke-width:3px; opacity:1",
+           #     area = "stroke-width:3px",
+           #     point = "stroke-width:3px" ) ),
+           opts_tooltip("background-color:gray;color:white;
+                                 font-style:italic;padding:6px;
+                                 border-radius:7px;")
          ))
+
+  # girafe(ggobj = pp.int,
+  #                options = list(
+  #                      # opts_hover(css = "fill:green; stroke: blue;"),
+  #                        # opts_hover(css = "fill:wheat;stroke:orange;r:5pt;"),
+  #                        opts_hover(css = girafe_css(
+  #                              css = "fill:orange;stroke:gray;",
+  #                              text = "stroke:blue; font-size: larger",
+  #                              line = "fill:none; stroke:blue",
+  #                              area = "stroke-width:3px;stroke:blue",
+  #                              point = "stroke-width:3px",
+  #                              image = "outline:2px red"
+  #                          ) ),
+  #                        opts_tooltip("background-color:gray;color:white;
+  #                                font-style:bold;padding:6px;
+  #                                border-radius:7px;")
+  #                  ))
+
+  return(ppiraph)
 }
