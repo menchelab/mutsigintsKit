@@ -10,7 +10,8 @@ plot_mixed_layout(
   graph.input,
   central.nodes = c("Ageing", "SBS5", "SBS40"),
   circular.node.order = NULL,
-  edge.width.breaks = NULL
+  edge.width.breaks = NULL,
+  lbm = margin(0, 0, 0, 1.1, unit = "in")
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ outer layer. Default: NULL}
 
 \item{edge.width.breaks}{Can be used to manually specify the edge widths.
 Default: NULL}
+
+\item{lbm}{legend.box.margin to be passed to theme}
 }
 \value{
 a ggraph plot of the interaction network.

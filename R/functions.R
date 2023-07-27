@@ -2441,15 +2441,16 @@ plot_sigint_forest = function(data, log.HR = TRUE) {
 #' outer layer. Default: NULL
 #' @param edge.width.breaks Can be used to manually specify the edge widths.
 #' Default: NULL
+#' @param lbm legend.box.margin to be passed to theme
 #' @details Beware!!! The node colors are predefined for different etiology groups.
 #' The etiology groups are derived from signature.annotations object
 #' @return a ggraph plot of the interaction network.
 #' @export
 
 plot_mixed_layout = function(graph.input,
-                                   central.nodes = c("Ageing" , "SBS5", "SBS40"),
-                                   circular.node.order = NULL, edge.width.breaks = NULL,
-                             lbm = legend.box.margin=margin(0,0,0, 1.1, unit = "in")) {
+                             central.nodes = c("Ageing" , "SBS5", "SBS40"),
+                             circular.node.order = NULL, edge.width.breaks = NULL,
+                             lbm = margin(0,0,0, 1.1, unit = "in")) {
 
 
   all.nodes = graph.input %>%
@@ -2598,17 +2599,17 @@ plot_layout_interactive = function(pp) {
   #                            data = edge.connections)
 
   ppiraph = girafe(ggobj = pp.int,
-         options = list(
-           # opts_hover(css = girafe_css(
-           #     css = "fill:orange; stroke:red",
-           #     text = "stroke:blue; font-size: larger",
-           #     line = "fill:black; stroke-width:3px; opacity:1",
-           #     area = "stroke-width:3px",
-           #     point = "stroke-width:3px" ) ),
-           opts_tooltip("background-color:gray;color:white;
+                   options = list(
+                     # opts_hover(css = girafe_css(
+                     #     css = "fill:orange; stroke:red",
+                     #     text = "stroke:blue; font-size: larger",
+                     #     line = "fill:black; stroke-width:3px; opacity:1",
+                     #     area = "stroke-width:3px",
+                     #     point = "stroke-width:3px" ) ),
+                     opts_tooltip("background-color:gray;color:white;
                                  font-style:italic;padding:6px;
                                  border-radius:7px;")
-         ))
+                   ))
 
   # girafe(ggobj = pp.int,
   #                options = list(
