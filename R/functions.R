@@ -2448,7 +2448,8 @@ plot_sigint_forest = function(data, log.HR = TRUE) {
 
 plot_mixed_layout = function(graph.input,
                                    central.nodes = c("Ageing" , "SBS5", "SBS40"),
-                                   circular.node.order = NULL, edge.width.breaks = NULL) {
+                                   circular.node.order = NULL, edge.width.breaks = NULL,
+                             lbm = legend.box.margin=margin(0,0,0, 1.1, unit = "in")) {
 
 
   all.nodes = graph.input %>%
@@ -2520,7 +2521,10 @@ plot_mixed_layout = function(graph.input,
                                  "Clock-like" = "white",
                                  "Unknown" = "#4e6151") ) +
     theme_void() +
-    theme(legend.position = "right", legend.title = element_blank() )
+    theme(legend.position = "right",
+          legend.title = element_blank(),
+          legend.margin=margin(0,0,0,0),
+          legend.box.margin=lbm)
   return(pp)
 }
 
