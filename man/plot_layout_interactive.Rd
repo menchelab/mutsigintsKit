@@ -4,10 +4,14 @@
 \alias{plot_layout_interactive}
 \title{interactive network plot}
 \usage{
-plot_layout_interactive(pp)
+plot_layout_interactive(pp, width.svg = NULL, height.svg = NULL)
 }
 \arguments{
 \item{pp}{ggraph output from plot_mixed_layout. In fact any layout would work.}
+
+\item{width.svg}{will be passed to girafe function as width_svg}
+
+\item{height.svg}{will be passed to girafe function as height_svg}
 }
 \description{
 interactive network plot

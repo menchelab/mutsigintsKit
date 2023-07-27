@@ -2571,9 +2571,11 @@ graph_unique_edges = function(input.graph, summary.col = NULL) {
 
 #' interactive network plot
 #' @param pp ggraph output from plot_mixed_layout. In fact any layout would work.
+#' @param width.svg will be passed to girafe function as width_svg
+#' @param height.svg will be passed to girafe function as height_svg
 #' @export
 
-plot_layout_interactive = function(pp) {
+plot_layout_interactive = function(pp, width.svg = NULL, height.svg = NULL) {
 
   ggbuild = ggplot_build(pp)
 
@@ -2609,7 +2611,9 @@ plot_layout_interactive = function(pp) {
                      opts_tooltip("background-color:gray;color:white;
                                  font-style:italic;padding:6px;
                                  border-radius:7px;")
-                   ))
+                   ),
+                   width_svg = width.svg,
+                   height_svg = height.svg)
 
   # girafe(ggobj = pp.int,
   #                options = list(
