@@ -2521,7 +2521,7 @@ plot_mixed_layout = function(graph.input,
                                  "Unknown" = "#4e6151") ) +
     theme_void() +
     theme(legend.position = "right", legend.title = element_blank() )
-  return(list (pp = pp, graph.input = graph.input))
+  return(pp)
 }
 
 #' Removes identical edges between two nodes
