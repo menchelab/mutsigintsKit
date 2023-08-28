@@ -12,7 +12,7 @@ graph_unique_edges(input.graph, summary.col = NULL)
 \item{summary.col}{This variable indicates the column, which should be summarized.
 When specified, all the edges between the same nodes, which have different values
 for this column are summarized, a new edge variable \code{count} is added and
-the values of the specificed column are collapsed and stored in the column called
+the values of the specified column are collapsed and stored in the column called
 \code{summedList}}
 }
 \description{

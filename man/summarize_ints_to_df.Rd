@@ -2,8 +2,11 @@
 % Please edit documentation in R/functions.R
 \name{summarize_ints_to_df}
 \alias{summarize_ints_to_df}
-\title{For a list of interaction metrics this function summarizes the positive and
-negative interactions into a dataframe which can then be fed into plotting functions.}
+\title{\subsection{TO BE REPLACED BY summarize_ints_to_df_clean}{
+
+For a list of interaction metrics this function summarizes the positive and
+negative interactions into a dataframe which can then be fed into plotting functions.
+}}
 \usage{
 summarize_ints_to_df(
   list.of.int.elems,
@@ -27,6 +30,9 @@ Default:TRUE.}
 Dataframe for plotting.
 }
 \description{
+\subsection{TO BE REPLACED BY summarize_ints_to_df_clean}{
+
 For a list of interaction metrics this function summarizes the positive and
 negative interactions into a dataframe which can then be fed into plotting functions.
+}
 }

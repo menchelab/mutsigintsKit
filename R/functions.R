@@ -456,6 +456,7 @@ ggheatmap_wrapper = function(metric.matrix,
 }
 
 
+#' #### TO BE REPLACED BY summarize_ints_to_df_clean
 #' For a list of interaction metrics this function summarizes the positive and
 #' negative interactions into a dataframe which can then be fed into plotting functions.
 #'
@@ -486,7 +487,7 @@ summarize_ints_to_df = function(list.of.int.elems, threshold = 0.1, min.abssum =
   for (rowelem in all.rows) {
     for (colelem in all.cols) {
       point.ints = unlist(sapply(list.of.int.elems,
-                                 function(x) as.data.frame(x)[rowelem, colelem]))
+                                 function(x) as.data.frame(x)[rowelem, colelem] ) )
 
       point.ints[abs(point.ints) < threshold] = 0
 
@@ -555,6 +556,44 @@ summarize_ints_to_df = function(list.of.int.elems, threshold = 0.1, min.abssum =
 
   return(gg.final.dt)
 }
+
+
+#' For a list of interaction metrics this function summarizes the positive and
+#' negative interactions, aggregates tissue names.
+#'
+#' @param int.value.list A list with matrix elements.
+#' @param threshold All the values below the threshold are discarded.
+#' @param min.abssum Rows and columns containing with less than this number of
+#' interactions (absolute) are removed. Default: 1.
+#' @return Dataframe for plotting.
+#' @export
+
+summarize_ints_to_df_new = function(int.value.list, threshold = 0.1, min.abssum = 1) {
+
+  int.value.list = int.value.list[lengths(int.value.list) > 0]
+
+  mat_to_df_list = lapply(names(int.value.list ),
+                          function(nn) {
+                            int.value.list[[nn]] %>%
+                              as.data.frame() %>% rownames_to_column(var = "rows") %>%
+                              pivot_longer(cols = -rows,
+                                           values_to = "value", names_to = "cols") %>%
+                              mutate(tissue = nn,
+                                     int.type = ifelse(value > 0, "pos", "neg")) %>%
+                              filter(value != 0, abs(value) > threshold)
+                          })
+
+  mat_to_df = do.call(rbind, mat_to_df_list)
+
+  summarized = mat_to_df %>%
+    group_by(rows, cols, int.type) %>%
+    dplyr::summarize(count = n(), summedList = toString(sort(unique(tissue)))) %>%
+    mutate(count = ifelse(int.type == "pos", count, count * (-1)))
+
+  summarized = summarized %>% filter(abs(count) >= min.abssum)
+  return(summarized)
+}
+
 
 #' For a list of interaction metrics this function summarizes the positive and
 #' negative interactions in a plot.
@@ -709,7 +748,7 @@ plot_all_counts = function(list.of.int.elems, threshold = 0.1, min.abssum = 1,
 
 plot_bipartite2 = function(tissue.odds.ratios) {
 
-  df = summarize_ints_to_df(tissue.odds.ratios) %>% filter(count != 0)
+  df = summarize_ints_to_df_new(tissue.odds.ratios) %>% filter(count != 0)
 
   # nodes.df
 
@@ -741,16 +780,29 @@ plot_bipartite2 = function(tissue.odds.ratios) {
                        start_cap = circle(0),
                        end_cap = circle(0),
                        sep = unit(0.8, 'mm')) +
-    geom_node_point(aes(fill = annot.class, shape = type),
-                    color = "gray30",
+    geom_node_point(aes(fill = annot.class, shape = type, color = annot.class),
+                    # color = "gray30",
                     size = 4,
                     stroke = 0.6) +
-    scale_fill_manual(values = c("Endogenous" = "#CAE7B9",
+    scale_shape_manual(values = c("Path" = 22,
+                                  "Sig" = 21),
+                       labels = c("Pathway", "Signature")) +
+    scale_color_manual(values = c("Endogenous" = "#CAE7B9",
                                  "Environmental" = "#f3de8a",
                                  "Clock-like" = "white",
                                  "Unknown" = "#4e6151",
                                  "Pathway" = "gray50"),
                       name = "Signature class") +
+    scale_fill_manual(values = c("Endogenous" = "#CAE7B9",
+                                  "Environmental" = "#f3de8a",
+                                  "Clock-like" = "white",
+                                  "Unknown" = "#4e6151",
+                                  "Pathway" = "gray50"),
+                       name = "Signature class") +
+    geom_node_point(aes(shape = type),
+                    color = "gray30",
+                    size = 4,
+                    stroke = 0.6) +
     geom_node_label(aes(label = id#, fill = type
     ),
     color = "gray10",
@@ -763,9 +815,6 @@ plot_bipartite2 = function(tissue.odds.ratios) {
     scale_edge_color_manual(values = c("pos" = "red4",
                                        "neg" = "dodgerblue3"),
                             labels = c("positive", "negative")) +
-    scale_shape_manual(values = c("Path" = 22,
-                                  "Sig" = 21),
-                       labels = c("Pathway", "Signature")) +
     scale_edge_width_continuous(breaks = seq(bipart %>%
                                                activate(edges) %>%
                                                pull(count) %>%
@@ -2533,7 +2582,7 @@ plot_mixed_layout = function(graph.input,
 #' @param summary.col This variable indicates the column, which should be summarized.
 #' When specified, all the edges between the same nodes, which have different values
 #' for this column are summarized, a new edge variable `count` is added and
-#' the values of the specificed column are collapsed and stored in the column called
+#' the values of the specified column are collapsed and stored in the column called
 #' `summedList`
 #' @export
 
