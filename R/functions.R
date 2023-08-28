@@ -703,13 +703,13 @@ plot_all_counts = function(list.of.int.elems, threshold = 0.1, min.abssum = 1,
 
 ### bipartite (needs more work)
 #' Bipartite network test
-#' @param gg.df Dataframe returned by summarize_ints_to_df
+#' @param tissue.odds.ratios Dataframe returned by summarize_ints_to_df
 #' @return gggraph with sugiyama layout
 #' @export
 
-plot_bipartite2 = function(gg.df) {
+plot_bipartite2 = function(tissue.odds.ratios) {
 
-  df = summarize_ints_to_df(tissue.odds.ratio.unadjusted) %>% filter(count != 0)
+  df = summarize_ints_to_df(tissue.odds.ratios) %>% filter(count != 0)
 
   # nodes.df
 

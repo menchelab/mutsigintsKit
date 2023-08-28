@@ -4,10 +4,10 @@
 \alias{plot_bipartite2}
 \title{Bipartite network test}
 \usage{
-plot_bipartite2(gg.df)
+plot_bipartite2(tissue.odds.ratios)
 }
 \arguments{
-\item{gg.df}{Dataframe returned by summarize_ints_to_df}
+\item{tissue.odds.ratios}{Dataframe returned by summarize_ints_to_df}
 }
 \value{
 gggraph with sugiyama layout
