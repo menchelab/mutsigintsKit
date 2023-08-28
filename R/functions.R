@@ -353,8 +353,7 @@ get_tissue_pathway_activities = function(tissue,
   return(list(sigs = tissue.sig.subset, paths = tissue.path.subset))
 }
 
-#' Assess signature-pathway interactions across tissues for PCAWG with a custom
-#' function
+#' Assess signature-pathway interactions across tissues for a custom function
 #' @param sigs.input Signature activities. The rows correspond to samples, the
 #' first three columns are Cancer.Types, Sample.Names, Accuracy, all the other
 #' columns correspond to signature names. The values are signature activities.
@@ -372,7 +371,7 @@ get_tissue_pathway_activities = function(tissue,
 #' where each element is the interaction matrix
 #' @export
 
-pcawg_sig_pathway_int = function(sigs.input,
+sig_pathway_int = function(sigs.input,
                                  pathways.input,
                                  interaction_function,
                                  path.min.tissues = 30,
