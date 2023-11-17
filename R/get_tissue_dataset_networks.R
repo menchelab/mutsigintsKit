@@ -21,11 +21,22 @@ get_tissue_dataset_networks = function(tissue,
                                        filter.list = NULL,
                                        filter.mat = NULL) {
 
+    dump_zero_rows_cols = function(ll) {
+      for (elem.name in names(ll) ) {
+        mat = ll[[elem.name]]
+        mat = mat[rowSums(mat) > 0, colSums(mat) > 0]
+
+        ll[[elem.name]] = mat
+      }
+
+      return(ll)
+    }
+
     out.list = lapply(network.lists, function(x)
         x[[tissue]])
 
     if (is.null(filter.list)) {
-        return(out.list)
+        return( dump_zero_rows_cols (out.list) )
     }
 
     filter.list.absent = setdiff(names(filter.list), names(out.list))
@@ -39,7 +50,6 @@ get_tissue_dataset_networks = function(tissue,
         varlim = filter.list[[var]]
         mat = out.list[[var]]
         mat[ abs(mat) < varlim ] = 0
-        mat = mat[rowSums(mat) > 0, colSums(mat) > 0]
         out.list[[var]] = mat
     }
     # For each matrix for metric thresholds, all the elements in the
@@ -51,5 +61,5 @@ get_tissue_dataset_networks = function(tissue,
       }
     }
 
-    return(out.list)
+    return( dump_zero_rows_cols (out.list) )
 }
