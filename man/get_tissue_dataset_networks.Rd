@@ -5,7 +5,12 @@
 \title{Extracts the interaction metrics of a tissue
 from a list of interaction networks.}
 \usage{
-get_tissue_dataset_networks(tissue, network.lists, filter.list = NULL)
+get_tissue_dataset_networks(
+  tissue,
+  network.lists,
+  filter.list = NULL,
+  filter.mat = NULL
+)
 }
 \arguments{
 \item{tissue}{Tissue to be extracted}
@@ -16,6 +21,13 @@ get_tissue_dataset_networks(tissue, network.lists, filter.list = NULL)
 element names have the same names as metric names in network.lists.
 The values specify filtering threshold. Everything below the number is
 set to 0. Default: NULL}
+
+\item{filter.mat}{If provided, this is a list of matrices, where the name of
+the element is the metric name. The list elements are matrices of all
+signature combinations in that tissue, where matrix elements are a predefined
+quantile of the null model of given sig-sig interaction. If provided the
+matrix will add another layer of filtering, where the absolute metric values
+smaller than the provided value are set to 0.}
 }
 \value{
 A list with interaction metric matrices. The list element names match
