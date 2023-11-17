@@ -24,7 +24,7 @@ get_tissue_dataset_networks = function(tissue,
     dump_zero_rows_cols = function(ll) {
       for (elem.name in names(ll) ) {
         mat = ll[[elem.name]]
-        mat = mat[rowSums(mat) > 0, colSums(mat) > 0]
+        mat = mat[rowSums(abs(mat) ) > 0, colSums( abs (mat )) > 0]
 
         ll[[elem.name]] = mat
       }
