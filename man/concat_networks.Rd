@@ -4,7 +4,7 @@
 \alias{concat_networks}
 \title{Summarize different metric outputs for an interaction}
 \usage{
-concat_networks(network.lists, tissue, filter.list)
+concat_networks(network.lists, tissue, filter.list, filter.mat = NULL)
 }
 \arguments{
 \item{network.lists}{The input list.}
@@ -15,6 +15,8 @@ concat_networks(network.lists, tissue, filter.list)
 element names have the same names as metric names in network.lists.
 The values specify filtering threshold. Everything below the number is
 set to 0. Default: NULL}
+
+\item{filter.mat}{Passed to get_tissue_dataset_networks.}
 }
 \description{
 Summarize different metric outputs for an interaction

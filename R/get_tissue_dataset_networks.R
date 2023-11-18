@@ -22,14 +22,15 @@ get_tissue_dataset_networks = function(tissue,
                                        filter.mat = NULL) {
 
     dump_zero_rows_cols = function(ll) {
+      out = list()
       for (elem.name in names(ll) ) {
         mat = ll[[elem.name]]
         mat = mat[rowSums(abs(mat) ) > 0, colSums( abs (mat )) > 0]
 
-        ll[[elem.name]] = mat
+        out[[elem.name]] = mat
       }
 
-      return(ll)
+      return(out)
     }
 
     out.list = lapply(network.lists, function(x)

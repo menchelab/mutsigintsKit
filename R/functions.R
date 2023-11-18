@@ -1143,15 +1143,17 @@ get_common_sigs = function(metric.list, metric, outdir, threshold = 0.2) {
 #' element names have the same names as metric names in network.lists.
 #' The values specify filtering threshold. Everything below the number is
 #' set to 0. Default: NULL
+#' @param filter.mat Passed to get_tissue_dataset_networks.
 #' @export
 
-concat_networks = function(network.lists, tissue, filter.list) {
+concat_networks = function(network.lists, tissue, filter.list, filter.mat = NULL) {
 
   try({
     tissue.nets = get_tissue_dataset_networks(
       tissue,
       network.lists = network.lists,
-      filter.list = filter.list
+      filter.list = filter.list,
+      filter.mat = filter.mat
     )
 
     for (type in names(tissue.nets)) {
