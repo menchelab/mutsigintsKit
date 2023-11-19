@@ -1202,16 +1202,21 @@ concat_networks = function(network.lists, tissue, filter.list, filter.mat = NULL
 #' element names have the same names as metric names in network.lists.
 #' The values specify filtering threshold. Everything below the number is
 #' set to 0. Default: NULL
+#' @param filter.mat Passed to the function get_tissue_dataset_networks
 #' @param layout layout to be passed to ggraph. Default: stress. Some useful
 #' alternative is dh.
 #' @export
 
-plot_multi_network = function(network.lists, tissue, filter.list, layout = "stress") {
+plot_multi_network = function(network.lists, tissue,
+                              filter.list = NULL,
+                              filter.mat = NULL, layout = "stress") {
 
   tissue.nets = get_tissue_dataset_networks(
     tissue,
     network.lists = network.lists,
-    filter.list = list(MI = 0.2))
+    filter.list = filter.list,
+    filter.mat = filter.mat
+    )
 
   for (type in names(tissue.nets)) {
     if (sum(abs(tissue.nets[[type]]) ) == 0  ) {

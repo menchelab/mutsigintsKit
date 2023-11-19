@@ -4,7 +4,13 @@
 \alias{plot_multi_network}
 \title{Wrapper of tissue interaction network plot}
 \usage{
-plot_multi_network(network.lists, tissue, filter.list, layout = "stress")
+plot_multi_network(
+  network.lists,
+  tissue,
+  filter.list = NULL,
+  filter.mat = NULL,
+  layout = "stress"
+)
 }
 \arguments{
 \item{network.lists}{The input list}
@@ -15,6 +21,8 @@ plot_multi_network(network.lists, tissue, filter.list, layout = "stress")
 element names have the same names as metric names in network.lists.
 The values specify filtering threshold. Everything below the number is
 set to 0. Default: NULL}
+
+\item{filter.mat}{Passed to the function get_tissue_dataset_networks}
 
 \item{layout}{layout to be passed to ggraph. Default: stress. Some useful
 alternative is dh.}
