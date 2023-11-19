@@ -366,7 +366,6 @@ get_tissue_pathway_activities = function(tissue,
 #' @param p.val.threshold p-value threshold for BH correction. Default: 0.05
 #' @param p.adjust Controls if p-values should be adjusted. Default: TRUE
 #' @param method P-value adjustement methods. Default: BH
-#' @param plot.limits Scale limits in the ggheatmap
 #' @return A list with the length of abundant tissues in the datasets,
 #' where each element is the interaction matrix
 #' @export
@@ -404,6 +403,75 @@ sig_pathway_int = function(sigs.input,
   }
   return(tissue.odds.mats)
 }
+
+
+#' Assess signature-pathway interactions null model across tissues for a custom function
+#' @param sigs.input Signature activities. The rows correspond to samples, the
+#' first three columns are Cancer.Types, Sample.Names, Accuracy, all the other
+#' columns correspond to signature names. The values are signature activities.
+#' @param pathways.input Pathway status - formatted like mutated.pathways.tissues
+#' Pathway activities start at column 4. The first three columns are sample_id,
+#' donor_id, Cancer.Types. Other columns correspond to pathway names. The values
+#' correspond to number of mutations in the pathway.
+#' @param interaction_function The function defining the metric. E.g. get_sig_path_assocs
+#' @param path.min.tissues Minimal number of samples in each tissue to be considered
+#' @param p.val.threshold p-value threshold for BH correction. Default: 0.05
+#' @param p.adjust Controls if p-values should be adjusted. Default: TRUE
+#' @param method P-value adjustement methods. Default: BH
+#' @param N number of times the shuffling should take place
+#' @return A list with the length of abundant tissues in the datasets,
+#' where each element is the interaction matrix
+#' @export
+
+sig_pathway_int_null = function(sigs.input,
+                           pathways.input,
+                           interaction_function,
+                           path.min.tissues = 30,
+                           p.val.threshold = 0.05,
+                           p.adjust = FALSE,
+                           method = "BH",
+                           N = 1000,
+                           ...) {
+
+  abundant.tissues = which(sigs.input$Cancer.Types %>%
+                             table() > path.min.tissues) %>% names()
+
+  tissue.odds.mats.null = list()
+
+  shuffle_df = function(df) {
+    out = data.frame(sapply(df, sample))
+    rownames(out) = rownames(df)
+    return(out)
+  }
+
+  FF = function(ss, pp) {
+    interaction_function(
+      ss,
+      pp,
+      p.val.threshold = p.val.threshold,
+      p.adjust = p.adjust,
+      method = method, ...)
+  }
+
+  for (tissue in abundant.tissues){
+    cat(tissue, "\n")
+
+    tissue.elems = get_tissue_pathway_activities(tissue,
+                                                 sigs.input,
+                                                 pathways.input)
+
+    null.outs = replicate(N,
+                          FF(
+                            shuffle_df(tissue.elems$sigs),
+                            shuffle_df(tissue.elems$paths)) %>%
+                            rm_zeros(),
+                          simplify = FALSE)
+
+    tissue.odds.mats.null[[tissue]] = null.outs
+  }
+  return(tissue.odds.mats.null)
+}
+
 
 #' A ggheatmap wrapper for interaction matrix returns
 #' @param metric.matrix the input matrix
