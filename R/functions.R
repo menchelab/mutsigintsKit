@@ -1766,18 +1766,18 @@ get_surv_plotlist = function(sig.sig.tissues.matrix,
 #' Running batch survival analysis tests for a set of interactions. Returns a
 #' list of cox regression outputs for all the interaction tests which didn't fail.
 #' @param sig.sig.tissues.matrix A matrix with rows and columns with signatures,
-#'  and the elements are comma-separated tissue names where that interaction is
-#'  observed.
-#'  @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
-#'  @param clin.df The dataframe with clinical info.
-#'  @param with.total.muts If TRUE the total number of mutations in the samples will
-#'  be provided as a confounder to the model. Default: TRUE
-#'  @param tmb.logged If TRUE the tumor mutational burden will be logged.
-#'  Default: TRUE
-#'  @param binary.status If TRUE, the model will compare samples with both signatures
-#'  with all the other samples having either of the signatures or none. Default:
-#'  FALSE
-#'  @export
+#' and the elements are comma-separated tissue names where that interaction is
+#' observed.
+#' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
+#' @param clin.df The dataframe with clinical info.
+#' @param with.total.muts If TRUE the total number of mutations in the samples will
+#' be provided as a confounder to the model. Default: TRUE
+#' @param tmb.logged If TRUE the tumor mutational burden will be logged.
+#' Default: TRUE
+#' @param binary.status If TRUE, the model will compare samples with both signatures
+#' with all the other samples having either of the signatures or none. Default:
+#' FALSE
+#' @export
 
 get_surv_coxlist = function(sig.sig.tissues.matrix,
                             dataset,
@@ -1838,17 +1838,17 @@ get_surv_coxlist = function(sig.sig.tissues.matrix,
 #' effect for the interaction and among those models with one with the highest
 #' loglik is picked.
 #' @param sig.sig.tissues.matrix A matrix with rows and columns with signatures,
-#'  and the elements are comma-separated tissue names where that interaction is
-#'  observed.
-#'  @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
-#'  @param clin.df The dataframe with clinical info.
-#'  @param with.total.muts If TRUE the total number of mutations in the samples will
-#'  be provided as a confounder to the model. Default: TRUE
-#'  @param tmb.logged If TRUE the tumor mutational burden will be logged.
-#'  Default: TRUE
-#'  @param binary.status If TRUE, the model will compare samples with both signatures
-#'  with all the other samples having either of the signatures or none. Default:
-#'  FALSE
+#' and the elements are comma-separated tissue names where that interaction is
+#' observed.
+#' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
+#' @param clin.df The dataframe with clinical info.
+#' @param with.total.muts If TRUE the total number of mutations in the samples will
+#' be provided as a confounder to the model. Default: TRUE
+#' @param tmb.logged If TRUE the tumor mutational burden will be logged.
+#' Default: TRUE
+#' @param binary.status If TRUE, the model will compare samples with both signatures
+#' with all the other samples having either of the signatures or none. Default:
+#' FALSE
 
 get_surv_bestcoxlist = function(sig.sig.tissues.matrix,
                                 dataset,
@@ -1991,18 +1991,18 @@ pick_survival_model_int = function(dataset = dataset,
 #' supports a survival effect for a given interaction, then this model is selected.
 #' Among several models, the one with the lowest loglik is .
 #' @param sig.sig.tissues.matrix A matrix with rows and columns with signatures,
-#'  and the elements are comma-separated tissue names where that interaction is
-#'  observed.
-#'  @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
-#'  @param clin.df The dataframe with clinical info.
-#'  @param with.total.muts If TRUE the total number of mutations in the samples will
-#'  be provided as a confounder to the model. Default: TRUE
-#'  @param tmb.logged If TRUE the tumor mutational burden will be logged.
-#'  Default: TRUE
-#'  @param binary.status If TRUE, the model will compare samples with both signatures
-#'  with all the other samples having either of the signatures or none. Default:
-#'  FALSE
-#'  @export
+#' and the elements are comma-separated tissue names where that interaction is
+#' observed.
+#' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
+#' @param clin.df The dataframe with clinical info.
+#' @param with.total.muts If TRUE the total number of mutations in the samples will
+#' be provided as a confounder to the model. Default: TRUE
+#' @param tmb.logged If TRUE the tumor mutational burden will be logged.
+#' Default: TRUE
+#' @param binary.status If TRUE, the model will compare samples with both signatures
+#' with all the other samples having either of the signatures or none. Default:
+#' FALSE
+#' @export
 
 get_surv_best_model = function(sig.sig.tissues.matrix,
                                dataset,
@@ -2010,7 +2010,7 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                param.list,
                                min.sample.fraction = 0) {
 
-  tt <- ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
+  tt <- gridExtra::ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
                        base_size = 10,
                        padding = unit(c(2, 4), "mm"))
 
@@ -2237,17 +2237,17 @@ order_matrix_rc = function(input.mat) {
 
 #' Plots a signature heatmap with pathway annotations
 #'
-#'@param tissue Tissue
-#'@param signatures Signatures dataframe, signatures start from column 4.
+#' @param tissue Tissue
+#' @param signatures Signatures dataframe, signatures start from column 4.
 #' Column 2 is Sample.Names.
-#'@param pathways Pathway mutations dataframe, pathways start from column 4,
+#' @param pathways Pathway mutations dataframe, pathways start from column 4,
 #' contains donor_id.
-#'@param border_color Border color of cells. This parameter is there to control
+#' @param border_color Border color of cells. This parameter is there to control
 #' removing border color with NA. Pheatmap doesn't properly remove it
 #' and the border is still present when saving the plot. Default: gray60.
 #' Should be NA to remove the border_color.
-#'@param ... Params passed to pheatmap.
-#'@export
+#' @param ... Params passed to pheatmap.
+#' @export
 
 pathways_signatures_heatmap = function(tissue, signatures, pathways,
                                        border_color = "grey60", ...) {

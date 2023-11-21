@@ -18,17 +18,21 @@ get_surv_best_model(
 \arguments{
 \item{sig.sig.tissues.matrix}{A matrix with rows and columns with signatures,
 and the elements are comma-separated tissue names where that interaction is
-observed.
-@param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
-@param clin.df The dataframe with clinical info.
-@param with.total.muts If TRUE the total number of mutations in the samples will
-be provided as a confounder to the model. Default: TRUE
-@param tmb.logged If TRUE the tumor mutational burden will be logged.
-Default: TRUE
-@param binary.status If TRUE, the model will compare samples with both signatures
+observed.}
+
+\item{dataset}{The signature values for all samples. E.g. PCAWG.full.subset.ann}
+
+\item{clin.df}{The dataframe with clinical info.}
+
+\item{with.total.muts}{If TRUE the total number of mutations in the samples will
+be provided as a confounder to the model. Default: TRUE}
+
+\item{tmb.logged}{If TRUE the tumor mutational burden will be logged.
+Default: TRUE}
+
+\item{binary.status}{If TRUE, the model will compare samples with both signatures
 with all the other samples having either of the signatures or none. Default:
-FALSE
-@export}
+FALSE}
 }
 \description{
 Running batch survival analysis tests for a set of interactions. Returns a
