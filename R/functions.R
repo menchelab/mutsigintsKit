@@ -2757,3 +2757,13 @@ plot_layout_interactive = function(pp, width.svg = NULL, height.svg = NULL) {
 
   return(ppiraph)
 }
+
+#' Get the percentile of a value v in a vector x.
+#' @param x The vector
+#' @param v The value
+#'
+#' @export
+
+percentile <- function(x, v) {
+  sum(x <= v) / length(x)
+}
