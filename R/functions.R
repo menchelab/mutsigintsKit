@@ -413,25 +413,20 @@ sig_pathway_int = function(sigs.input,
 #' Pathway activities start at column 4. The first three columns are sample_id,
 #' donor_id, Cancer.Types. Other columns correspond to pathway names. The values
 #' correspond to number of mutations in the pathway.
-#' @param interaction_function The function defining the metric. E.g. get_sig_path_assocs
+#' @param interaction_functions The functions defining the metrics.
+#' E.g. get_sig_path_assocs
 #' @param path.min.tissues Minimal number of samples in each tissue to be considered
-#' @param p.val.threshold p-value threshold for BH correction. Default: 0.05
-#' @param p.adjust Controls if p-values should be adjusted. Default: TRUE
-#' @param method P-value adjustement methods. Default: BH
 #' @param N number of times the shuffling should take place
 #' @return A list with the length of abundant tissues in the datasets,
-#' where each element is the interaction matrix
+#' where each element is a 3D array, where first two dims are sig and path, the 3rd
+#' dim is the N metric values from N random shufflings.
 #' @export
 
 sig_pathway_int_null = function(sigs.input,
-                           pathways.input,
-                           interaction_function,
-                           path.min.tissues = 30,
-                           p.val.threshold = 0.05,
-                           p.adjust = FALSE,
-                           method = "BH",
-                           N = 1000,
-                           ...) {
+                                pathways.input,
+                                interaction.functions,
+                                path.min.tissues = 30,
+                                N = 1000) {
 
   abundant.tissues = which(sigs.input$Cancer.Types %>%
                              table() > path.min.tissues) %>% names()
@@ -444,15 +439,6 @@ sig_pathway_int_null = function(sigs.input,
     return(out)
   }
 
-  FF = function(ss, pp) {
-    interaction_function(
-      ss,
-      pp,
-      p.val.threshold = p.val.threshold,
-      p.adjust = p.adjust,
-      method = method, ...)
-  }
-
   for (tissue in abundant.tissues){
     cat(tissue, "\n")
 
@@ -460,14 +446,28 @@ sig_pathway_int_null = function(sigs.input,
                                                  sigs.input,
                                                  pathways.input)
 
-    null.outs = replicate(N,
-                          FF(
-                            shuffle_df(tissue.elems$sigs),
-                            shuffle_df(tissue.elems$paths)) %>%
-                            rm_zeros(),
-                          simplify = FALSE)
+    shuffled.sigs = replicate(N, shuffle_df(tissue.elems$sigs),
+                              simplify = FALSE)
+    ### no need to shuffled the pathways, since the sigs are already
 
-    tissue.odds.mats.null[[tissue]] = null.outs
+
+
+    shuffled.metrics = lapply(
+      interaction.functions,
+      function(xf) {
+        lapply(1:N, function(ind) {
+          metric.out = xf(sigs = shuffled.sigs[[ind]],
+                          paths = tissue.elems$paths)
+          return(metric.out)
+        })
+      })
+
+    metric.dists = list()
+    for(metric.name in names(shuffled.metrics)) {
+      metric.dists[[metric.name]] = simplify2array(shuffled.metrics[[metric.name]])
+    }
+
+    tissue.odds.mats.null[[tissue]] = metric.dists
   }
   return(tissue.odds.mats.null)
 }
