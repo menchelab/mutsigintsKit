@@ -463,7 +463,7 @@ sig_pathway_int_null = function(sigs.input,
       })
 
     metric.dists = list()
-    for(metric.name in names(shuffled.metrics)) {
+    for(metric.name in names(interaction.functions)) {
       metric.dists[[metric.name]] = simplify2array(shuffled.metrics[[metric.name]])
     }
 
