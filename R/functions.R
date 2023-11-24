@@ -185,7 +185,7 @@ get_sig_path_assocs = function(sigs.df, pathways.df, p.val.threshold = 0.05,
   # odds.mat = odds.mat[rowSums(abs(odds.mat), na.rm = TRUE) > 0, , drop = FALSE]
   # odds.mat = odds.mat[, colSums(abs(odds.mat), na.rm = TRUE) > 0 , drop = FALSE]
 
-  return(as.data.frame(odds.mat))
+  return(odds.mat)
 }
 
 
