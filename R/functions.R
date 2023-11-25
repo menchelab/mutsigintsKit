@@ -1515,6 +1515,7 @@ survival_for_interactions = function(dataset, clin.df, signatures,
                                      tmb.logged = TRUE,
                                      binary.status = FALSE,
                                      get_df = FALSE,
+                                     epistatic = FALSE,
                                      conf.int = FALSE) {
 
   # SBS40_APOBEC = survival_for_interactions(dataset = PCAWG.full.subset.ann,
@@ -1579,11 +1580,11 @@ survival_for_interactions = function(dataset, clin.df, signatures,
 
 
   signatures = sort(signatures)
-  sbs1 = signatures[1]
-  sbs2 = signatures[2]
+  sig1 = signatures[1]
+  sig2 = signatures[2]
 
-  colnames(survival.df)[ which(colnames(survival.df) == sbs1)] = "SBS__1"
-  colnames(survival.df)[ which(colnames(survival.df) == sbs2)] = "SBS__2"
+  colnames(survival.df)[ which(colnames(survival.df) == sig1)] = "SBS__1"
+  colnames(survival.df)[ which(colnames(survival.df) == sig2)] = "SBS__2"
 
   survival.df$exists__1 = as.numeric(survival.df$SBS__1 > 0)
   survival.df$exists__2 = as.numeric(survival.df$SBS__2 > 0)
@@ -1592,62 +1593,92 @@ survival_for_interactions = function(dataset, clin.df, signatures,
 
   sig.comb.status = apply(survival.df[, c("exists__1", "exists__2")], MARGIN = 1,
                           function(x) {
-                            if(x[1] == 1 & x[2] == 1) return(paste0(sbs1, "+", sbs2))
-                            if(x[1] == 0 & x[2] == 1) return(paste0( sbs2))
-                            if(x[1] == 1 & x[2] == 0) return(paste0( sbs1))
+                            if(x[1] == 1 & x[2] == 1) return(paste0(sig1, "+", sig2))
+                            if(x[1] == 0 & x[2] == 1) return(paste0( sig2))
+                            if(x[1] == 1 & x[2] == 0) return(paste0( sig1))
                             if(x[1] == 0 & x[2] == 0) return(paste0("None"))
                           } )
 
   survival.df$status = sig.comb.status
-  survival.df$status = factor(survival.df$status, levels = c("None", sbs1,
-                                                             sbs2, paste0(sbs1, "+", sbs2)))
+  survival.df$status = factor(survival.df$status, levels = c("None", sig1,
+                                                             sig2, paste0(sig1, "+", sig2)))
 
 
   if (binary.status) {
-    survival.df$status = ifelse(survival.df$status == paste0(sbs1, "+", sbs2),
-                                paste0(sbs1, "+", sbs2), "Others")
+    survival.df$status = ifelse(survival.df$status == paste0(sig1, "+", sig2),
+                                paste0(sig1, "+", sig2), "Others")
     survival.df$status = factor(survival.df$status,
-                                levels = c("Others", paste0(sbs1, "+", sbs2)))
+                                levels = c("Others", paste0(sig1, "+", sig2)))
 
   }
   if(get_df) {
     return(survival.df)
   }
 
-  if (length(tissues) >1 ) {
-    if (with.total.muts) {
-      if (tmb.logged) {
-        cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
-                       Cancer.Types + status + log(total_muts + 1),
-                     data = survival.df, na.action = na.omit)
-      } else {
-        cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
-                       Cancer.Types + status + total_muts,
-                     data = survival.df, na.action = na.omit)
-      }
-    }else {
-      cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
-                     Cancer.Types + status,
-                   data = survival.df, na.action = na.omit)
-    }
-  } else {
-    if (with.total.muts) {
-      if (tmb.logged) {
-        cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
-                       status + log(total_muts + 1),
-                     data = survival.df, na.action = na.omit)
-      } else {
-        cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
-                       status + total_muts,
-                     data = survival.df, na.action = na.omit)
 
-      }
-    }else {
-      cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
-                     status,
-                   data = survival.df, na.action = na.omit)
+  formula.string = "Surv(survival_time, vital_status) ~ age_at_diagnosis"
+
+  if (length(tissues) > 1) {
+    formula.string = paste0(formula.string, " + Cancer.Types")
+  }
+
+  if (with.total.muts) {
+    if (tmb.logged) {
+      formula.string = paste0(formula.string, " + log(total_muts + 1)")
+    } else {
+      formula.string = paste0(formula.string, " + total_muts")
     }
   }
+
+  if (epistatic) {
+    formula.string = paste0(formula.string, " + exists__1 + exists__2 + exists__1 * exists__2")
+  } else {
+    formula.string = paste0(formula.string, " + status")
+  }
+
+  cox <- coxph(as.formula(formula.string), data = survival.df, na.action = na.omit)
+
+  if (epistatic) {
+    nn = names(cox$coefficients)
+    nn[nn == "exists__1"] = sig1
+    nn[nn == "exists__2"] = sig2
+    nn[nn == "exists__1:exists__2"] = paste(sig1, sig2, sep = "*")
+    names(cox$coefficients) = nn
+  }
+  # if (length(tissues) >1 ) {
+  #   if (with.total.muts) {
+  #     if (tmb.logged) {
+  #       cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
+  #                      Cancer.Types + status + log(total_muts + 1),
+  #                    data = survival.df, na.action = na.omit)
+  #     } else {
+  #       cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
+  #                      Cancer.Types + status + total_muts,
+  #                    data = survival.df, na.action = na.omit)
+  #     }
+  #   }else {
+  #     cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
+  #                    Cancer.Types + status,
+  #                  data = survival.df, na.action = na.omit)
+  #   }
+  # } else {
+  #   if (with.total.muts) {
+  #     if (tmb.logged) {
+  #       cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
+  #                      status + log(total_muts + 1),
+  #                    data = survival.df, na.action = na.omit)
+  #     } else {
+  #       cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
+  #                      status + total_muts,
+  #                    data = survival.df, na.action = na.omit)
+  #
+  #     }
+  #   }else {
+  #     cox <- coxph(Surv(survival_time, vital_status) ~ age_at_diagnosis +
+  #                    status,
+  #                  data = survival.df, na.action = na.omit)
+  #   }
+  # }
 
   temp <- cox.zph(cox)
 
@@ -1701,6 +1732,7 @@ get_surv_plotlist = function(sig.sig.tissues.matrix,
                              with.total.muts = TRUE,
                              tmb.logged = TRUE,
                              binary.status = FALSE,
+                             epistatic = FALSE,
                              legend.pos = c(0.8, 0.8)) {
 
   tt <- ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
@@ -1731,7 +1763,8 @@ get_surv_plotlist = function(sig.sig.tissues.matrix,
                                                 legend_pos = legend.pos,
                                                 with.total.muts = with.total.muts,
                                                 tmb.logged = tmb.logged,
-                                                binary.status = binary.status)
+                                                binary.status = binary.status,
+                                                epistatic = epistatic)
 
       cox.coefs = round(summary(surv.out$coxout)$coefficients, 2)
       rownames(cox.coefs) = gsub("status", "", rownames(cox.coefs))
@@ -1750,10 +1783,11 @@ get_surv_plotlist = function(sig.sig.tissues.matrix,
 
       coefs.ggforest = ggforest(model = surv.out$coxout, data = surv.out$survival.df)
 
+      coefs.table = tableGrob(cox.coefs)
       # p = ggarrange(survp$plot, tblgrob, nrow = 2)
-      p = cowplot::plot_grid(survp$plot, coefs.ggforest, nrow = 2,
-                             rel_heights = c(2, 1),
-                             rel_widths = c(1, 1.5))
+      p = cowplot::plot_grid(survp$plot, coefs.ggforest, coefs.table, nrow = 3,
+                             rel_heights = c(1.5, 0.7, 0.7),
+                             rel_widths = c(1, 1.5, 1.5))
 
       j = j + 1
       out_plotlist[[j]] = p} )
