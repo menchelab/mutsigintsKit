@@ -11,7 +11,8 @@ get_surv_coxlist(
   clin.df,
   with.total.muts = TRUE,
   tmb.logged = TRUE,
-  binary.status = FALSE
+  binary.status = FALSE,
+  epistatic = FALSE
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ Default: TRUE}
 \item{binary.status}{If TRUE, the model will compare samples with both signatures
 with all the other samples having either of the signatures or none. Default:
 FALSE}
+
+\item{epistatic}{The survival model tests the interaction of int1 and int2 as
+int1 * int2. Default: FALSE}
 }
 \description{
 Running batch survival analysis tests for a set of interactions. Returns a

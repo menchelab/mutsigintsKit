@@ -1504,6 +1504,8 @@ get_relevant_clin_df = function(clin.df, dataset, is.TCGA, tissues) {
 #' @param binary.status If TRUE, the model will compare samples with both signatures
 #' with all the other samples having either of the signatures or none. Default:
 #' FALSE
+#' @param epistatic The survival model tests the interaction of int1 and int2 as
+#' int1 * int2. Default: FALSE
 #' @param get_df If true, the function returns the constructed model dataframe
 #' (for debugging). Default:FALSE.
 #' @param conf.int If TRUE confidence interval should be added to ggsurvplot.
@@ -1514,8 +1516,8 @@ survival_for_interactions = function(dataset, clin.df, signatures,
                                      with.total.muts = TRUE,
                                      tmb.logged = TRUE,
                                      binary.status = FALSE,
-                                     get_df = FALSE,
                                      epistatic = FALSE,
+                                     get_df = FALSE,
                                      conf.int = FALSE) {
 
   # SBS40_APOBEC = survival_for_interactions(dataset = PCAWG.full.subset.ann,
@@ -1712,19 +1714,21 @@ survival_for_interactions = function(dataset, clin.df, signatures,
 #' Running batch survival analysis tests for a set of interactions. Returns a
 #' plotlist for all the interaction test which didn't fail.
 #' @param sig.sig.tissues.matrix A matrix with rows and columns with signatures,
-#'  and the elements are comma-separated tissue names where that interaction is
-#'  observed.
-#'  @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
-#'  @param clin.df The dataframe with clinical info.
-#'  @param with.total.muts If TRUE the total number of mutations in the samples will
-#'  be provided as a confounder to the model. Default: TRUE
-#'  @param tmb.logged If TRUE the tumor mutational burden will be logged.
-#'  Default: TRUE
-#'  @param binary.status If TRUE, the model will compare samples with both signatures
-#'  with all the other samples having either of the signatures or none. Default:
-#'  FALSE
-#'  @param legend.pos Position of the legend in the survival plot.
-#'  @export
+#' and the elements are comma-separated tissue names where that interaction is
+#' observed.
+#' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
+#' @param clin.df The dataframe with clinical info.
+#' @param with.total.muts If TRUE the total number of mutations in the samples will
+#' be provided as a confounder to the model. Default: TRUE
+#' @param tmb.logged If TRUE the tumor mutational burden will be logged.
+#' Default: TRUE
+#' @param binary.status If TRUE, the model will compare samples with both signatures
+#' with all the other samples having either of the signatures or none. Default:
+#' FALSE
+#' @param epistatic The survival model tests the interaction of int1 and int2 as
+#' int1 * int2. Default: FALSE
+#' @param legend.pos Position of the legend in the survival plot.
+#' @export
 
 get_surv_plotlist = function(sig.sig.tissues.matrix,
                              dataset,
@@ -1811,6 +1815,8 @@ get_surv_plotlist = function(sig.sig.tissues.matrix,
 #' @param binary.status If TRUE, the model will compare samples with both signatures
 #' with all the other samples having either of the signatures or none. Default:
 #' FALSE
+#' @param epistatic The survival model tests the interaction of int1 and int2 as
+#' int1 * int2. Default: FALSE
 #' @export
 
 get_surv_coxlist = function(sig.sig.tissues.matrix,
@@ -1818,7 +1824,8 @@ get_surv_coxlist = function(sig.sig.tissues.matrix,
                             clin.df,
                             with.total.muts = TRUE,
                             tmb.logged = TRUE,
-                            binary.status = FALSE) {
+                            binary.status = FALSE,
+                            epistatic = FALSE) {
 
   tt <- ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
                        base_size = 10,

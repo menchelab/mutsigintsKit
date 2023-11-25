@@ -14,6 +14,7 @@ survival_for_interactions(
   with.total.muts = TRUE,
   tmb.logged = TRUE,
   binary.status = FALSE,
+  epistatic = FALSE,
   get_df = FALSE,
   conf.int = FALSE
 )
@@ -42,6 +43,9 @@ Default: TRUE}
 \item{binary.status}{If TRUE, the model will compare samples with both signatures
 with all the other samples having either of the signatures or none. Default:
 FALSE}
+
+\item{epistatic}{The survival model tests the interaction of int1 and int2 as
+int1 * int2. Default: FALSE}
 
 \item{get_df}{If true, the function returns the constructed model dataframe
 (for debugging). Default:FALSE.}
