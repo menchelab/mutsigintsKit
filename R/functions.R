@@ -371,13 +371,13 @@ get_tissue_pathway_activities = function(tissue,
 #' @export
 
 sig_pathway_int = function(sigs.input,
-                                 pathways.input,
-                                 interaction_function,
-                                 path.min.tissues = 30,
-                                 p.val.threshold = 0.1,
-                                 p.adjust = TRUE,
-                                 method = "BH",
-                                 ...) {
+                           pathways.input,
+                           interaction_function,
+                           path.min.tissues = 30,
+                           p.val.threshold = 0.1,
+                           p.adjust = TRUE,
+                           method = "BH",
+                           ...) {
 
   abundant.tissues = which(sigs.input$Cancer.Types %>%
                              table() > path.min.tissues) %>% names()
@@ -856,17 +856,17 @@ plot_bipartite2 = function(tissue.odds.ratios) {
                                   "Sig" = 21),
                        labels = c("Pathway", "Signature")) +
     scale_color_manual(values = c("Endogenous" = "#CAE7B9",
-                                 "Environmental" = "#f3de8a",
-                                 "Clock-like" = "white",
-                                 "Unknown" = "#4e6151",
-                                 "Pathway" = "gray50"),
-                      name = "Signature class") +
-    scale_fill_manual(values = c("Endogenous" = "#CAE7B9",
                                   "Environmental" = "#f3de8a",
                                   "Clock-like" = "white",
                                   "Unknown" = "#4e6151",
                                   "Pathway" = "gray50"),
                        name = "Signature class") +
+    scale_fill_manual(values = c("Endogenous" = "#CAE7B9",
+                                 "Environmental" = "#f3de8a",
+                                 "Clock-like" = "white",
+                                 "Unknown" = "#4e6151",
+                                 "Pathway" = "gray50"),
+                      name = "Signature class") +
     geom_node_point(aes(shape = type),
                     color = "gray30",
                     size = 4,
@@ -1284,7 +1284,7 @@ plot_multi_network = function(network.lists, tissue,
     network.lists = network.lists,
     filter.list = filter.list,
     filter.mat = filter.mat
-    )
+  )
 
   for (type in names(tissue.nets)) {
     if (sum(abs(tissue.nets[[type]]) ) == 0  ) {
@@ -1461,16 +1461,16 @@ get_relevant_clin_df = function(clin.df, dataset, is.TCGA, tissues) {
     relevant.clin.df = clin.df[ match(tissues.subset$Sample.Names,
                                       clin.df$icgc_donor_id), ]
 
-    non_na.indeces = which(!is.na(relevant.clin.df$icgc_specimen_id))
+    non_na.indices = which(!is.na(relevant.clin.df$icgc_specimen_id))
 
-    tissues.subset = tissues.subset[non_na.indeces, ]
-    relevant.clin.df = relevant.clin.df[ non_na.indeces, ]
+    tissues.subset = tissues.subset[non_na.indices, ]
+    relevant.clin.df = relevant.clin.df[ non_na.indices, ]
 
   } else { ### for TCGA
 
     tissues.subset$Sample.Names = substr(tissues.subset$Sample.Names, 1, 12)
-    valid.indeces = which(tissues.subset$Sample.Names %in% clin.df$bcr_patient_barcode)
-    tissues.subset = tissues.subset[valid.indeces, ]
+    valid.indices = which(tissues.subset$Sample.Names %in% clin.df$bcr_patient_barcode)
+    tissues.subset = tissues.subset[valid.indices, ]
 
     relevant.clin.df = clin.df[ match(tissues.subset$Sample.Names,
                                       clin.df$bcr_patient_barcode), ]
@@ -1551,16 +1551,16 @@ survival_for_interactions = function(dataset, clin.df, signatures,
   #     relevant.clin.df = clin.df[ match(tissues.subset$Sample.Names,
   #                                       clin.df$icgc_donor_id), ]
   #
-  #     non_na.indeces = which(!is.na(relevant.clin.df$icgc_specimen_id))
+  #     non_na.indices = which(!is.na(relevant.clin.df$icgc_specimen_id))
   #
-  #     tissues.subset = tissues.subset[non_na.indeces, ]
-  #     relevant.clin.df = relevant.clin.df[ non_na.indeces, ]
+  #     tissues.subset = tissues.subset[non_na.indices, ]
+  #     relevant.clin.df = relevant.clin.df[ non_na.indices, ]
   #
   # } else { ### for TCGA
   #
   #     tissues.subset$Sample.Names = substr(tissues.subset$Sample.Names, 1, 12)
-  #     valid.indeces = which(tissues.subset$Sample.Names %in% clin.df$bcr_patient_barcode)
-  #     tissues.subset = tissues.subset[valid.indeces, ]
+  #     valid.indices = which(tissues.subset$Sample.Names %in% clin.df$bcr_patient_barcode)
+  #     tissues.subset = tissues.subset[valid.indices, ]
   #
   #     relevant.clin.df = clin.df[ match(tissues.subset$Sample.Names,
   #                                       clin.df$bcr_patient_barcode), ]
@@ -1638,7 +1638,8 @@ survival_for_interactions = function(dataset, clin.df, signatures,
     formula.string = paste0(formula.string, " + status")
   }
 
-  cox <- coxph(as.formula(formula.string), data = survival.df, na.action = na.omit)
+  cox <- coxph(as.formula(formula.string), data = survival.df, na.action = na.omit,
+               x = TRUE)
 
   if (epistatic) {
     nn = names(cox$coefficients)
@@ -1746,18 +1747,18 @@ get_surv_plotlist = function(sig.sig.tissues.matrix,
   if ( all(rownames(sig.sig.tissues.matrix) == colnames(sig.sig.tissues.matrix) ) ) {
     sig.sig.tissues.matrix[lower.tri(sig.sig.tissues.matrix, diag = TRUE)] = NA
   }
-  ints.indeces = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
+  int.indices = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
 
 
   out_plotlist = list()
   j = 0
-  for (i in 1:nrow(ints.indeces)) {
+  for (i in 1:nrow(int.indices)) {
 
-    indeces = ints.indeces[i, ]
-    sig1 = rownames(sig.sig.tissues.matrix)[indeces[1]]
-    sig2 = colnames(sig.sig.tissues.matrix)[indeces[2]]
+    indices = int.indices[i, ]
+    sig1 = rownames(sig.sig.tissues.matrix)[indices[1]]
+    sig2 = colnames(sig.sig.tissues.matrix)[indices[2]]
 
-    tissues = strsplit(sig.sig.tissues.matrix[indeces[1], indeces[2]], split = ", ")[[1]]
+    tissues = strsplit(sig.sig.tissues.matrix[indices[1], indices[2]], split = ", ")[[1]]
     for (tissue in tissues) {
       cat("Attempting cox survival for:", tissue, "::", sig1, "+", sig2, "j = ", j, "\n")
       try({surv.out = survival_for_interactions(dataset = dataset,
@@ -1834,18 +1835,18 @@ get_surv_coxlist = function(sig.sig.tissues.matrix,
   if ( all(rownames(sig.sig.tissues.matrix) == colnames(sig.sig.tissues.matrix) ) ) {
     sig.sig.tissues.matrix[lower.tri(sig.sig.tissues.matrix, diag = TRUE)] = NA
   }
-  ints.indeces = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
+  int.indices = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
 
 
   out_coxlist = list()
   j = 0
-  for (i in 1:nrow(ints.indeces)) {
+  for (i in 1:nrow(int.indices)) {
 
-    indeces = ints.indeces[i, ]
-    sig1 = rownames(sig.sig.tissues.matrix)[indeces[1]]
-    sig2 = colnames(sig.sig.tissues.matrix)[indeces[2]]
+    indices = int.indices[i, ]
+    sig1 = rownames(sig.sig.tissues.matrix)[indices[1]]
+    sig2 = colnames(sig.sig.tissues.matrix)[indices[2]]
 
-    tissues = strsplit(sig.sig.tissues.matrix[indeces[1], indeces[2]], split = ", ")[[1]]
+    tissues = strsplit(sig.sig.tissues.matrix[indices[1], indices[2]], split = ", ")[[1]]
     for (tissue in tissues) {
       cat("Attempting cox survival for:", tissue, "::", sig1, "+", sig2, "j = ", j, "\n")
       try({surv.out = survival_for_interactions(dataset = dataset,
@@ -1905,18 +1906,18 @@ get_surv_bestcoxlist = function(sig.sig.tissues.matrix,
   if ( all(rownames(sig.sig.tissues.matrix) == colnames(sig.sig.tissues.matrix) ) ) {
     sig.sig.tissues.matrix[lower.tri(sig.sig.tissues.matrix, diag = TRUE)] = NA
   }
-  ints.indeces = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
+  int.indices = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
 
 
   out_coxlist = list()
   j = 0
-  for (i in 1:nrow(ints.indeces)) {
+  for (i in 1:nrow(int.indices)) {
 
-    indeces = ints.indeces[i, ]
-    sig1 = rownames(sig.sig.tissues.matrix)[indeces[1]]
-    sig2 = colnames(sig.sig.tissues.matrix)[indeces[2]]
+    indices = int.indices[i, ]
+    sig1 = rownames(sig.sig.tissues.matrix)[indices[1]]
+    sig2 = colnames(sig.sig.tissues.matrix)[indices[2]]
 
-    tissues = strsplit(sig.sig.tissues.matrix[indeces[1], indeces[2]], split = ", ")[[1]]
+    tissues = strsplit(sig.sig.tissues.matrix[indices[1], indices[2]], split = ", ")[[1]]
     for (tissue in tissues) {
       cat("Attempting cox survival for:", tissue, "::", sig1, "+", sig2, "j = ", j, "\n")
       try({surv.out = survival_for_interactions(dataset = dataset,
@@ -1970,30 +1971,41 @@ pick_survival_model_int = function(dataset = dataset,
   ### exclude the impossible combinations
   # impossible.comb = c("with.total.muts" = FALSE, "tmb.logged" = TRUE)
   filtered.combinations = all.param.combinations %>%
-    mutate(tmb.logged = ifelse(with.total.muts == FALSE, "FALSE", tmb.logged)) %>%
+    mutate(tmb.logged = ifelse(with.total.muts == FALSE, "FALSE", tmb.logged),
+           binary.status = ifelse(epistatic, "FALSE", binary.status)) %>%
     unique()
 
   ### running the survival_for_interactions for given model
-  lambda = function(with.total.muts, tmb.logged, binary.status) {
+  lambda = function(with.total.muts, tmb.logged, binary.status, epistatic) {
     survival_for_interactions(dataset = dataset,
                               signatures = signatures,
                               tissues = tissues,
                               clin.df = clin.df,
                               with.total.muts = with.total.muts,
                               tmb.logged = tmb.logged,
-                              binary.status = binary.status)
+                              binary.status = binary.status,
+                              epistatic = epistatic)
   }
 
-  param.of.interactions = paste0("status", paste(sort(signatures), collapse = "+"), collapse = "")
   best.model.loglik = -Inf
   best.model = NULL
   for (i in 1:nrow(filtered.combinations)) {
     param.input = filtered.combinations[i,, drop = FALSE] %>% as.list
-    try({
 
+    cat("i = ", i, "best.model.loglik = ", best.model.loglik, "\n" )
+
+    if (param.input$epistatic) {
+      param.of.interactions = paste(sort(signatures), collapse = "*")
+    } else {
+      param.of.interactions = paste0("status",
+                                     paste(sort(signatures), collapse = "+"), collapse = "")
+    }
+
+    try({
+      # print(param.input)
       ### Applying the survival_for_interactions
       test.model = do.call(lambda,  param.input)
-
+      cat("model.loglik = ", test.model$coxout$loglik[2], "\n" )
 
       ### Filtering for minimum sample fraction
       sample.counts = test.model$survival.df$exists__12 %>% table()
@@ -2012,15 +2024,46 @@ pick_survival_model_int = function(dataset = dataset,
       p.val.of.interaction = summary(test.model$coxout)$coefficients[param.of.interactions,5]
       p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
 
-      if (p.val.of.interaction < 0.05) {
-        if (test.model$coxout$loglik[2] > best.model.loglik) {
+      # if (p.val.of.interaction < 0.05) {
+      #   if (test.model$coxout$loglik[2] > best.model.loglik) {
+      #     best.model = list(params = param.input, out.model = test.model,
+      #                       minority.smp.fraction = minority.sample.fraction)
+      #
+      #     best.model.loglik = test.model$loglik
+      #     # cat("\ntissue = ", tissues, "\n")
+      #     # print(unlist(param.input) )
+      #     # cat("\n")
+      #   }
+      # }
+
+      if(test.model$coxout$loglik[2] > best.model.loglik) {
+        if ( is.null(best.model) ) {
           best.model = list(params = param.input, out.model = test.model,
-                            minority.smp.fraction = minority.sample.fraction)
-          # cat("\ntissue = ", tissues, "\n")
-          # print(unlist(param.input) )
-          # cat("\n")
+                            minority.smp.fraction = minority.sample.fraction, ind = i)
+          best.model.loglik = test.model$coxout$loglik[2]
+        } else {
+          cat("PLR test for models", i, "and ", best.model$ind, "\n")
+          plrtest.out = plrtest(test.model$coxout, best.model$out.model$coxout)
+
+          if (plrtest.out$pLRTAB < 0.05) {
+            cat ("Model1 and model2 are distinguisable!!!!######!!!!!")
+            if (plrtest.out$pLRTA < 0.05) {
+              cat("Model1 fits better according to PLR.\n")
+              best.model = list(params = param.input, out.model = test.model,
+                                minority.smp.fraction = minority.sample.fraction, ind = i)
+              best.model.loglik = test.model$loglik[2]
+            } else {
+              if (test.model$coxout$loglik[2] > best.model.loglik ) {
+                best.model = list(params = param.input, out.model = test.model,
+                                  minority.smp.fraction = minority.sample.fraction, ind = i)
+                best.model.loglik = test.model$loglik[2]
+              }
+            }
+          } else {
+            cat ("Model1 and model2 are not distinguisable!!!!.....!!!!!")
+          }
         }
-      }
+        }
     } )
   }
   return(best.model)
@@ -2052,8 +2095,8 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                min.sample.fraction = 0) {
 
   tt <- gridExtra::ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
-                       base_size = 10,
-                       padding = unit(c(2, 4), "mm"))
+                                  base_size = 10,
+                                  padding = unit(c(2, 4), "mm"))
 
   if (missing(param.list)) {
     param.list = list("with.total.muts" = c(TRUE, FALSE),
@@ -2064,17 +2107,17 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
   if ( all(rownames(sig.sig.tissues.matrix) == colnames(sig.sig.tissues.matrix) ) ) {
     sig.sig.tissues.matrix[lower.tri(sig.sig.tissues.matrix, diag = TRUE)] = NA
   }
-  ints.indeces = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
+  int.indices = which(! is.na(sig.sig.tissues.matrix), arr.ind = T)
 
   out_coxlist = list()
   j = 0
-  for (i in 1:nrow(ints.indeces)) {
+  for (i in 1:nrow(int.indices)) {
 
-    indeces = ints.indeces[i, ]
-    sig1 = rownames(sig.sig.tissues.matrix)[indeces[1]]
-    sig2 = colnames(sig.sig.tissues.matrix)[indeces[2]]
+    indices = int.indices[i, ]
+    sig1 = rownames(sig.sig.tissues.matrix)[indices[1]]
+    sig2 = colnames(sig.sig.tissues.matrix)[indices[2]]
 
-    tissues = strsplit(sig.sig.tissues.matrix[indeces[1], indeces[2]], split = ", ")[[1]]
+    tissues = strsplit(sig.sig.tissues.matrix[indices[1], indices[2]], split = ", ")[[1]]
     for (tissue in tissues) {
       cat("Attempting cox survival for:", tissue, "::", sig1, "+", sig2, "j = ", j, "\n")
       try({surv.out = pick_survival_model_int(dataset = dataset,
