@@ -1577,11 +1577,6 @@ survival_for_interactions = function(dataset, clin.df, signatures,
                                            "age_at_diagnosis"#, "sex"
                       ) ] )
 
-  survival.df = cbind(survival.df, total_muts =
-                        rowSums(tissues.subset[, 4:ncol(tissues.subset)])) %>%
-    filter(!is.na(sig1), ! is.na(sig2))
-
-
   signatures = sort(signatures)
   sig1 = signatures[1]
   sig2 = signatures[2]
