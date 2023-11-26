@@ -1577,6 +1577,9 @@ survival_for_interactions = function(dataset, clin.df, signatures,
                                            "age_at_diagnosis"#, "sex"
                       ) ] )
 
+  survival.df = cbind(survival.df, total_muts =
+                        rowSums(tissues.subset[, 4:ncol(tissues.subset)]))
+
   signatures = sort(signatures)
   sig1 = signatures[1]
   sig2 = signatures[2]
@@ -1591,9 +1594,9 @@ survival_for_interactions = function(dataset, clin.df, signatures,
   survival.df$exists__12 = as.numeric(survival.df$SBS__1 > 0 & survival.df$SBS__2 > 0)
   survival.df$exists__None = as.numeric(survival.df$SBS__1 == 0 & survival.df$SBS__2 == 0)
 
+
   sig.comb.status = apply(survival.df[, c("exists__1", "exists__2")], MARGIN = 1,
                           function(x) {
-                            cat(x)
                             if(x[1] == 1 & x[2] == 1) return(paste0(sig1, "+", sig2))
                             if(x[1] == 0 & x[2] == 1) return(paste0( sig2))
                             if(x[1] == 1 & x[2] == 0) return(paste0( sig1))
