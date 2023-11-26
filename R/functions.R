@@ -1578,7 +1578,8 @@ survival_for_interactions = function(dataset, clin.df, signatures,
                       ) ] )
 
   survival.df = cbind(survival.df, total_muts =
-                        rowSums(tissues.subset[, 4:ncol(tissues.subset)]))
+                        rowSums(tissues.subset[, 4:ncol(tissues.subset)])) %>%
+    filter(!is.na(sig1), ! is.na(sig2))
 
 
   signatures = sort(signatures)
@@ -1588,6 +1589,8 @@ survival_for_interactions = function(dataset, clin.df, signatures,
   colnames(survival.df)[ which(colnames(survival.df) == sig1)] = "SBS__1"
   colnames(survival.df)[ which(colnames(survival.df) == sig2)] = "SBS__2"
 
+  survival.df = survival.df %>% filter(!is.na(SBS__1), !is.na(SBS__2))
+
   survival.df$exists__1 = as.numeric(survival.df$SBS__1 > 0)
   survival.df$exists__2 = as.numeric(survival.df$SBS__2 > 0)
   survival.df$exists__12 = as.numeric(survival.df$SBS__1 > 0 & survival.df$SBS__2 > 0)
@@ -1595,6 +1598,7 @@ survival_for_interactions = function(dataset, clin.df, signatures,
 
   sig.comb.status = apply(survival.df[, c("exists__1", "exists__2")], MARGIN = 1,
                           function(x) {
+                            cat(x)
                             if(x[1] == 1 & x[2] == 1) return(paste0(sig1, "+", sig2))
                             if(x[1] == 0 & x[2] == 1) return(paste0( sig2))
                             if(x[1] == 1 & x[2] == 0) return(paste0( sig1))
@@ -2043,7 +2047,8 @@ pick_survival_model_int = function(dataset = dataset,
           best.model.loglik = test.model$coxout$loglik[2]
         } else {
           cat("PLR test for models", i, "and ", best.model$ind, "\n")
-          plrtest.out = plrtest(test.model$coxout, best.model$out.model$coxout)
+          plrtest.out = plrtest(test.model$coxout, best.model$out.model$coxout,
+                                nested = FALSE)
 
           if (plrtest.out$pLRTAB < 0.05) {
             cat ("Model1 and model2 are distinguisable!!!!######!!!!!")
