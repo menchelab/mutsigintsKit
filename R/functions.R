@@ -2059,22 +2059,17 @@ pick_survival_model_int = function(dataset = dataset,
           plrtest.out = plrtest(test.model$coxout, best.model$out.model$coxout,
                                 nested = FALSE, adjusted = "BIC")
 
-          if (plrtest.out$pLRTAB < 0.05) {
-            cat ("Model1 and model2 are distinguisable!!!!######!!!!!")
-            if (plrtest.out$pLRTA < 0.05) {
-              cat("Model1 fits better according to PLR.\n")
+          if (plrtest.out$pLRTA < 0.1) {
+            cat("Model1 fits better according to PLR.!!!!.....!!!!!\n")
+            best.model = list(params = param.input, out.model = test.model,
+                              minority.smp.fraction = minority.sample.fraction, ind = i)
+            best.model.loglik = test.model$loglik[2]
+          } else {
+            if (test.model$coxout$loglik[2] > best.model.loglik ) {
               best.model = list(params = param.input, out.model = test.model,
                                 minority.smp.fraction = minority.sample.fraction, ind = i)
-              best.model.loglik = test.model$loglik[2]
-            } else {
-              if (test.model$coxout$loglik[2] > best.model.loglik ) {
-                best.model = list(params = param.input, out.model = test.model,
-                                  minority.smp.fraction = minority.sample.fraction, ind = i)
-                best.model.loglik = test.model$coxout$loglik[2]
-              }
+              best.model.loglik = test.model$coxout$loglik[2]
             }
-          } else {
-            cat ("Model1 and model2 are not distinguisable!!!!.....!!!!!")
           }
         }
         }
