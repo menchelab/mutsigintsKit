@@ -1620,6 +1620,7 @@ survival_for_interactions = function(dataset, clin.df, signatures,
     return(survival.df)
   }
 
+  ###### Making the survival model
 
   formula.string = "Surv(survival_time, vital_status) ~ age_at_diagnosis"
 
@@ -1645,6 +1646,7 @@ survival_for_interactions = function(dataset, clin.df, signatures,
     formula.string = paste0(formula.string, " + status")
   }
 
+  #########################################################################
   cox <- coxph(as.formula(formula.string), data = survival.df, na.action = na.omit,
                x = TRUE)
 
@@ -1986,7 +1988,7 @@ pick_survival_model_int = function(dataset = dataset,
     unique()
 
   ### running the survival_for_interactions for given model
-  lambda = function(with.total.muts, tmb.logged, binary.status, epistatic) {
+  lambda = function(age.at.diagnosis, with.total.muts, tmb.logged, binary.status, epistatic) {
     survival_for_interactions(dataset = dataset,
                               signatures = signatures,
                               tissues = tissues,
@@ -2004,7 +2006,7 @@ pick_survival_model_int = function(dataset = dataset,
     param.input = filtered.combinations[i,, drop = FALSE] %>% as.list
 
     cat("i = ", i, "best.model.loglik = ", best.model.loglik, "\n" )
-
+    print(unlist(param.input))
     if (param.input$epistatic) {
       param.of.interactions = paste(sort(signatures), collapse = "*")
     } else {
@@ -2055,7 +2057,7 @@ pick_survival_model_int = function(dataset = dataset,
         } else {
           cat("PLR test for models", i, "and ", best.model$ind, "\n")
           plrtest.out = plrtest(test.model$coxout, best.model$out.model$coxout,
-                                nested = FALSE)
+                                nested = FALSE, adjusted = "BIC")
 
           if (plrtest.out$pLRTAB < 0.05) {
             cat ("Model1 and model2 are distinguisable!!!!######!!!!!")
@@ -2068,7 +2070,7 @@ pick_survival_model_int = function(dataset = dataset,
               if (test.model$coxout$loglik[2] > best.model.loglik ) {
                 best.model = list(params = param.input, out.model = test.model,
                                   minority.smp.fraction = minority.sample.fraction, ind = i)
-                best.model.loglik = test.model$loglik[2]
+                best.model.loglik = test.model$coxout$loglik[2]
               }
             }
           } else {
@@ -2077,6 +2079,7 @@ pick_survival_model_int = function(dataset = dataset,
         }
         }
     } )
+    # readline()
   }
   return(best.model)
 }
