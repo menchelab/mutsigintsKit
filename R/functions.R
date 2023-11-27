@@ -2604,7 +2604,7 @@ plot_sigint_forest = function(data, log.HR = TRUE) {
     drop_na() %>%
     filter(P.val < 0.05, ! is.infinite(lower.95), ! is.infinite(upper.95),
            ! is.infinite(log(lower.95) ), ! is.infinite(log(upper.95)) ) %>%
-    filter(grepl("[+*]", params,fixed = TRUE)) %>%
+    filter(grepl("[+*]", params)) %>%
     filter(! params %in% c("age_at_diagnosis", "log(total_muts + 1)"))
 
   param.order = data.processed %>%
