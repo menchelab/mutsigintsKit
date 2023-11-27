@@ -1513,6 +1513,7 @@ get_relevant_clin_df = function(clin.df, dataset, is.TCGA, tissues) {
 
 survival_for_interactions = function(dataset, clin.df, signatures,
                                      tissues, legend_pos = c(0.8, 0.8),
+                                     age.at.diagnosis = TRUE,
                                      with.total.muts = TRUE,
                                      tmb.logged = TRUE,
                                      binary.status = FALSE,
@@ -1621,6 +1622,10 @@ survival_for_interactions = function(dataset, clin.df, signatures,
 
 
   formula.string = "Surv(survival_time, vital_status) ~ age_at_diagnosis"
+
+  if (age.at.diagnosis) {
+    formula.string = paste0(formula.string, " + age_at_diagnosis")
+  }
 
   if (length(tissues) > 1) {
     formula.string = paste0(formula.string, " + Cancer.Types")
@@ -1963,9 +1968,12 @@ pick_survival_model_int = function(dataset = dataset,
 ) {
   ### get all possible param values
   if (missing(param.values)) {
-    param.values = list("with.total.muts" = c(TRUE, FALSE),
-                        "tmb.logged" = c(TRUE, FALSE),
-                        "binary.status" = c(TRUE, FALSE)
+    param.values = list(
+      "age.at.diagnosis" = c(TRUE, FALSE),
+      "with.total.muts" = c(TRUE, FALSE),
+      "tmb.logged" = c(TRUE, FALSE),
+      "binary.status" = c(TRUE, FALSE),
+      "epistatic" = c(TRUE, FALSE)
     )
   }
   all.param.combinations = expand.grid(param.values)
@@ -1983,6 +1991,7 @@ pick_survival_model_int = function(dataset = dataset,
                               signatures = signatures,
                               tissues = tissues,
                               clin.df = clin.df,
+                              age.at.diagnosis = age.at.diagnosis,
                               with.total.muts = with.total.muts,
                               tmb.logged = tmb.logged,
                               binary.status = binary.status,
@@ -2102,9 +2111,12 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                   padding = unit(c(2, 4), "mm"))
 
   if (missing(param.list)) {
-    param.list = list("with.total.muts" = c(TRUE, FALSE),
-                      "tmb.logged" = c(TRUE, FALSE),
-                      "binary.status" = c(TRUE, FALSE))
+    param.list = list(
+      "age.at.diagnosis" = c(TRUE, FALSE),
+      "with.total.muts" = c(TRUE, FALSE),
+      "tmb.logged" = c(TRUE, FALSE),
+      "binary.status" = c(TRUE, FALSE),
+      "epistatic" = c(TRUE, FALSE))
   }
 
   if ( all(rownames(sig.sig.tissues.matrix) == colnames(sig.sig.tissues.matrix) ) ) {
