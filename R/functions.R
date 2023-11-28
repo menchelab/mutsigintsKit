@@ -2864,3 +2864,61 @@ plot_layout_interactive = function(pp, width.svg = NULL, height.svg = NULL) {
 percentile <- function(x, v) {
   sum(x <= v) / length(x)
 }
+
+
+#' The function outputs mutational profiles for mutations in genes
+#' in the pathway of interest and for all other mutations.
+#' @param pathway One of the 10 oncogenic pathway names.
+#' @param tissue The tissues where the profiles have to be assessed.
+#' @param pathways.df The data.frame with sample names and pathway alterations.
+#' @param vcf.dir Directory to vcf files
+#' @return A list with mutational profiles for all mutations and for those in
+#' the pathway of interest.
+
+pcawg_pathway_profiles = function(pathway, tissue, pathways.df, vcf.dir =
+                                    here("data/raw/PCAWG/vcfs/consensus_snv_indel/snv_mnv/")) {
+  path.genes = all.gene.path %>% filter(Pathway == pathway) %>% pull(Gene)
+
+  path.gene.symbols <- biomaRt::select(org.Hs.eg.db,
+                                       keys = path.genes,
+                                       columns = c("SYMBOL","ENTREZID"),
+                                       keytype = "SYMBOL")
+
+  path.gene.coords <- biomaRt::select(TxDb.Hsapiens.UCSC.hg19.knownGene,
+                                      keys = path.gene.symbols$ENTREZID,
+                                      columns = c("GENEID", "TXID", "TXCHROM", "TXSTART", "TXEND"),
+                                      keytype = "GENEID")
+
+  path_gene_granges = GRanges(seqnames = path.gene.coords$TXCHROM,
+                              IRanges(start = path.gene.coords$TXSTART,
+                                      end = path.gene.coords$TXEND)) %>%
+    disjoin()
+
+  tissue.samples = pathways.df %>% filter(Cancer.Types == tissue) %>%
+    pull(sample_id)
+
+  vcf.files <- list.files(vcf.dir,
+                          pattern = paste(tissue.samples, collapse = "|"), full.names = TRUE
+  )
+  vcf.files = vcf.files[!grepl("tbi", vcf.files)]
+
+  vcf.file.order = gsub(".consensus.*$", "", basename(vcf.files))
+  vcf.samples = pathways.df[match(vcf.file.order, pathways.df$sample_id),] %>%
+    pull(donor_id)
+
+  cat("Reading vcf files... This may take a while.\n")
+  grl <- MutationalPatterns::read_vcfs_as_granges(vcf.files, vcf.samples, "BSgenome.Hsapiens.UCSC.hg19")
+  cat("Done.\n")
+
+  grl.path = lapply(grl, function(x)
+    subsetByOverlaps(x, path_gene_granges) )
+
+  type.occurrences.path <- mut_type_occurrences(grl.path, ref.genome)
+
+  # total.type.occurrences = colSums(type.occurrences.path)
+
+
+  type.occurrences <- mut_type_occurrences(grl, ref.genome)
+  return(list(path.profiles = type.occurrences.path,
+              all.profiles = type.occurrences))
+}
