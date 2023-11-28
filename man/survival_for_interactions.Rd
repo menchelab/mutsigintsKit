@@ -11,6 +11,7 @@ survival_for_interactions(
   signatures,
   tissues,
   legend_pos = c(0.8, 0.8),
+  age.at.diagnosis = TRUE,
   with.total.muts = TRUE,
   tmb.logged = TRUE,
   binary.status = FALSE,

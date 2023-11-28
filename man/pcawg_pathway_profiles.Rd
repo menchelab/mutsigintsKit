@@ -11,6 +11,13 @@ pcawg_pathway_profiles(
   pathways.df,
   vcf.dir = here("data/raw/PCAWG/vcfs/consensus_snv_indel/snv_mnv/")
 )
+
+pcawg_pathway_profiles(
+  pathway,
+  tissue,
+  pathways.df,
+  vcf.dir = here("data/raw/PCAWG/vcfs/consensus_snv_indel/snv_mnv/")
+)
 }
 \arguments{
 \item{pathway}{One of the 10 oncogenic pathway names.}
@@ -24,8 +31,14 @@ pcawg_pathway_profiles(
 \value{
 A list with mutational profiles for all mutations and for those in
 the pathway of interest.
+
+A list with mutational profiles for all mutations and for those in
+the pathway of interest.
 }
 \description{
+The function outputs mutational profiles for mutations in genes
+in the pathway of interest and for all other mutations.
+
 The function outputs mutational profiles for mutations in genes
 in the pathway of interest and for all other mutations.
 }

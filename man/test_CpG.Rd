@@ -5,6 +5,8 @@
 \title{Hypergeometric test for C>T mutations at CpG sites between two profiles.}
 \usage{
 test_CpG(seven_channel_profile1, seven_channel_profile2, lower.tail = TRUE)
+
+test_CpG(seven_channel_profile1, seven_channel_profile2, lower.tail = TRUE)
 }
 \arguments{
 \item{seven_channel_profile1}{First profile}
@@ -15,7 +17,11 @@ test_CpG(seven_channel_profile1, seven_channel_profile2, lower.tail = TRUE)
 }
 \value{
 P value or 1-P of a hypergeometric test.
+
+P value or 1-P of a hypergeometric test.
 }
 \description{
+Hypergeometric test for C>T mutations at CpG sites between two profiles.
+
 Hypergeometric test for C>T mutations at CpG sites between two profiles.
 }

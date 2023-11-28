@@ -2874,6 +2874,7 @@ percentile <- function(x, v) {
 #' @param vcf.dir Directory to vcf files
 #' @return A list with mutational profiles for all mutations and for those in
 #' the pathway of interest.
+#' @export
 
 pcawg_pathway_profiles = function(pathway, tissue, pathways.df, vcf.dir =
                                     here("data/raw/PCAWG/vcfs/consensus_snv_indel/snv_mnv/")) {
@@ -2921,4 +2922,30 @@ pcawg_pathway_profiles = function(pathway, tissue, pathways.df, vcf.dir =
   type.occurrences <- mut_type_occurrences(grl, ref.genome)
   return(list(path.profiles = type.occurrences.path,
               all.profiles = type.occurrences))
+}
+
+
+
+
+#' Hypergeometric test for C>T mutations at CpG sites between two profiles.
+#' @param seven_channel_profile1 First profile
+#' @param seven_channel_profile2 Second profile
+#' @param lower.tail Parameter will be passed to phyper
+#' @return P value or 1-P of a hypergeometric test.
+#' @export
+
+test_CpG = function(seven_channel_profile1, seven_channel_profile2, lower.tail = TRUE) {
+
+  ### Following the logic of the answer
+  ### https://stackoverflow.com/questions/8382806/hypergeometric-test-phyper
+
+  p1 = seven_channel_profile1
+  p2 = seven_channel_profile2
+
+  q = p1["C>T at CpG"]
+  m = p1["C>T at CpG"] + p2["C>T at CpG"]
+  n = p1["C>T"] + p2["C>T"] - m
+  k = p1["C>T"]
+
+  return(phyper(q, m, n, k, lower.tail))
 }
