@@ -2085,7 +2085,8 @@ pick_survival_model_int = function(dataset,
 #       if(model.coxout$loglik[2] > best.model.loglik) {
         if ( is.null(best.model) ) {
           best.model = list(params = param.input, out.model = test.model,
-                            minority.smp.fraction = minority.sample.fraction, ind = i)
+                            minority.smp.fraction = minority.sample.fraction, ind = i,
+                            poi = param.of.interactions)
           best.model.loglik = model.coxout$loglik[2]
         } else {
           plr.msg = paste0("PLR test for models ", i, " and ", best.model$ind)
@@ -2096,7 +2097,8 @@ pick_survival_model_int = function(dataset,
           if (plrtest.out$pLRTA < 0.1) {
             cat("Model1 fits better according to PLR.!!!!########!!!!!\n")
             best.model = list(params = param.input, out.model = test.model,
-                              minority.smp.fraction = minority.sample.fraction, ind = i)
+                              minority.smp.fraction = minority.sample.fraction, ind = i,
+                              poi = param.of.interactions)
             best.model.loglik = model.coxout$loglik[2]
           }
           # else {
@@ -2182,10 +2184,14 @@ pick_survival_model_int = function(dataset,
 
   if (!is.null(filename)) {
     if (rm.non.sig.sheets) {
-      p.val.of.interaction = summary(best.model$out.model)$coefficients[param.of.interactions,5]
+      p.val.of.interaction = summary(best.model$out.model$coxout)$coefficients[best.model$poi,5]
       p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
-      if (p.val.of.interaction >0.05) {
 
+      print("#############################################")
+      print(p.val.of.interaction)
+      print("#############################################")
+      if (p.val.of.interaction > 0.05) {
+      print("removing the worksheet.")
         wb = loadWorkbook(filename)
         removeWorksheet(wb, sheet = sheet.name)
         saveWorkbook(wb, filename, overwrite = TRUE)
