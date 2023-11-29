@@ -2067,8 +2067,8 @@ pick_survival_model_int = function(dataset,
 
       # return(test.model)
       model.coxout = test.model$coxout
-      p.val.of.interaction = summary(model.coxout)$coefficients[param.of.interactions,5]
-      p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
+      # p.val.of.interaction = summary(model.coxout)$coefficients[param.of.interactions,5]
+      # p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
 
       # if (p.val.of.interaction < 0.05) {
       #   if (test.model$coxout$loglik[2] > best.model.loglik) {
@@ -2182,7 +2182,10 @@ pick_survival_model_int = function(dataset,
 
   if (!is.null(filename)) {
     if (rm.non.sig.sheets) {
+      p.val.of.interaction = summary(best.model$out.model)$coefficients[param.of.interactions,5]
+      p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
       if (p.val.of.interaction >0.05) {
+
         wb = loadWorkbook(filename)
         removeWorksheet(wb, sheet = sheet.name)
         saveWorkbook(wb, filename, overwrite = TRUE)
