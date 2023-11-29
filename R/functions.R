@@ -1588,7 +1588,8 @@ survival_for_interactions = function(dataset, clin.df, signatures,
   colnames(survival.df)[ which(colnames(survival.df) == sig1)] = "SBS__1"
   colnames(survival.df)[ which(colnames(survival.df) == sig2)] = "SBS__2"
 
-  survival.df = survival.df %>% filter(!is.na(SBS__1), !is.na(SBS__2))
+  survival.df = survival.df %>% filter(!is.na(SBS__1), !is.na(SBS__2),
+                                       !is.na(age_at_diagnosis))
 
   survival.df$exists__1 = as.numeric(survival.df$SBS__1 > 0)
   survival.df$exists__2 = as.numeric(survival.df$SBS__2 > 0)
@@ -1622,7 +1623,7 @@ survival_for_interactions = function(dataset, clin.df, signatures,
 
   ###### Making the survival model
 
-  formula.string = "Surv(survival_time, vital_status) ~ age_at_diagnosis"
+  formula.string = "Surv(survival_time, vital_status) ~ "
 
   if (age.at.diagnosis) {
     formula.string = paste0(formula.string, " + age_at_diagnosis")
@@ -1647,7 +1648,8 @@ survival_for_interactions = function(dataset, clin.df, signatures,
   }
 
   #########################################################################
-  cox <- coxph(as.formula(formula.string), data = survival.df, na.action = na.omit,
+  formula.string = gsub("~  +", "~", formula.string, fixed = TRUE)
+  cox <- coxph(as.formula(formula.string), data = survival.df,
                x = TRUE)
 
   if (epistatic) {
@@ -1968,11 +1970,14 @@ pick_survival_model_int = function(dataset = dataset,
                                    tissues = tissue,
                                    clin.df = clin.df,
                                    param.values,
-                                   min.sample.fraction = 0
-                                   # with.total.muts = with.total.muts,
-                                   # tmb.logged = tmb.logged,
-                                   # binary.status = binary.status
-) {
+                                   mpick_survival_model_int = function(dataset = dataset,
+                                   signatures = c(sig1, sig2),
+                                   tissues = tissue,
+                                   clin.df = clin.df,
+                                   param.values,
+                                   min.sample.fraction = 0,
+                                   filename = NULL,
+                                   rm.non.sig.sheets = TRUE) {
   ### get all possible param values
   if (missing(param.values)) {
     param.values = list(
@@ -1983,6 +1988,34 @@ pick_survival_model_int = function(dataset = dataset,
       "epistatic" = c(TRUE, FALSE)
     )
   }
+
+  if (!is.null(filename)) {
+    sheet.name = paste0(tissue, "__", signatures[1], "+",signatures[2])
+
+
+    if (!file.exists(filename)) {
+      wb <- createWorkbook()
+      addWorksheet(wb, sheet.name)
+      start.row = 1
+      cat("File doesn't exist.\n")
+    } else {
+      wb = loadWorkbook(filename)
+
+
+      if (! sheet.name %in% names(wb)) {
+        addWorksheet(wb, sheet.name)
+        start.row = 1
+      } else {
+        cat("Sheet exists.\n")
+        start.row = nrow(readWorkbook(filename,
+                                      sheet = sheet.name,
+                                      colNames = FALSE,
+                                      skipEmptyRows = FALSE))+5
+      }
+    }
+  }
+
+
   all.param.combinations = expand.grid(param.values)
 
   ### exclude the impossible combinations
@@ -2039,7 +2072,7 @@ pick_survival_model_int = function(dataset = dataset,
 
       # return(test.model)
       model.coxout = test.model$coxout
-      p.val.of.interaction = summary(test.model$coxout)$coefficients[param.of.interactions,5]
+      p.val.of.interaction = summary(model.coxout)$coefficients[param.of.interactions,5]
       p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
 
       # if (p.val.of.interaction < 0.05) {
@@ -2054,33 +2087,334 @@ pick_survival_model_int = function(dataset = dataset,
       #   }
       # }
 
-      if(test.model$coxout$loglik[2] > best.model.loglik) {
+#       if(model.coxout$loglik[2] > best.model.loglik) {
         if ( is.null(best.model) ) {
           best.model = list(params = param.input, out.model = test.model,
                             minority.smp.fraction = minority.sample.fraction, ind = i)
-          best.model.loglik = test.model$coxout$loglik[2]
+          best.model.loglik = model.coxout$loglik[2]
         } else {
-          cat("PLR test for models", i, "and ", best.model$ind, "\n")
-          plrtest.out = plrtest(test.model$coxout, best.model$out.model$coxout,
+          plr.msg = paste0("PLR test for models ", i, " and ", best.model$ind)
+          cat(plr.msg, "\n")
+          plrtest.out = plrtest(model.coxout, best.model$out.model$coxout,
                                 nested = FALSE, adjusted = "BIC")
 
           if (plrtest.out$pLRTA < 0.1) {
-            cat("Model1 fits better according to PLR.!!!!.....!!!!!\n")
+            cat("Model1 fits better according to PLR.!!!!########!!!!!\n")
             best.model = list(params = param.input, out.model = test.model,
                               minority.smp.fraction = minority.sample.fraction, ind = i)
-            best.model.loglik = test.model$loglik[2]
-          } else {
-            if (test.model$coxout$loglik[2] > best.model.loglik ) {
-              best.model = list(params = param.input, out.model = test.model,
-                                minority.smp.fraction = minority.sample.fraction, ind = i)
-              best.model.loglik = test.model$coxout$loglik[2]
-            }
+            best.model.loglik = model.coxout$loglik[2]
           }
+          # else {
+            # if (model.coxout$loglik[2] > best.model.loglik ) {
+            #   best.model = list(params = param.input, out.model = test.model,
+            #                     minority.smp.fraction = minority.sample.fraction, ind = i)
+            #   best.model.loglik = model.coxout$loglik[2]
+            # }
+          # }
+         }
+      # }
+
+      if (!is.null(filename)) {
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = paste0("Model ", i),
+                  colNames = TRUE,
+                  rowNames = FALSE,
+                  startRow = start.row)
+
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = formula.tools:::as.character.formula(model.coxout$formula),
+                  colNames = TRUE,
+                  rowNames = FALSE,
+                  startRow = start.row + 1)
+
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = summary(model.coxout)$coefficients,
+                  colNames = TRUE,
+                  rowNames = TRUE,
+                  startRow = start.row + 3,
+                  keepNA = TRUE,
+                  na.string = "NA")
+
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = "Model log-likelihoods",
+                  colNames = FALSE,
+                  rowNames = FALSE,
+                  startRow = start.row + 10,
+                  keepNA = TRUE,
+                  na.string = "NA")
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = setNames(model.coxout$loglik, c("initial", "final" )) %>%
+                    enframe() %>% t() %>% as.data.frame(),
+                  colNames = FALSE,
+                  rowNames = FALSE,
+                  startRow = start.row + 11,
+                  keepNA = TRUE,
+                  na.string = "NA")
+        if (exists("plr.msg")) {
+          writeData(wb = wb,
+                    sheet = sheet.name,
+                    x = plr.msg,
+                    colNames = FALSE,
+                    rowNames = FALSE,
+                    startRow = start.row + 15,
+                    keepNA = TRUE,
+                    na.string = "NA")
+
+          writeData(wb = wb,
+                    sheet = sheet.name,
+                    x = capture.output(print(plrtest.out)),
+                    colNames = FALSE,
+                    rowNames = FALSE,
+                    startRow = start.row + 16,
+                    keepNA = TRUE,
+                    na.string = "NA")
+
         }
-        }
+        start.row = start.row + 33
+      }
+
+      saveWorkbook(wb, file = filename, overwrite = TRUE)
+
     } )
     # readline()
   }
+
+  if (!is.null(filename)) {
+    if (rm.non.sig.sheets) {
+      if (p.val.of.interaction >0.05) {
+        wb = loadWorkbook(filename)
+        removeWorksheet(wb, sheetName = sheet.name)
+        saveWorkbook(wb, filename, overwrite = TRUE)
+      }
+    }
+  }
+
+  return(best.model)
+}
+in.sample.fraction = 0,
+                                   filename = NULL,
+                                   rm.non.sig.sheets = TRUE) {
+  ### get all possible param values
+  if (missing(param.values)) {
+    param.values = list(
+      "age.at.diagnosis" = c(TRUE, FALSE),
+      "with.total.muts" = c(TRUE, FALSE),
+      "tmb.logged" = c(TRUE, FALSE),
+      "binary.status" = c(TRUE, FALSE),
+      "epistatic" = c(TRUE, FALSE)
+    )
+  }
+
+  if (!is.null(filename)) {
+    sheet.name = paste0(tissue, "__", signatures[1], "+",signatures[2])
+
+
+    if (!file.exists(filename)) {
+      wb <- createWorkbook()
+      addWorksheet(wb, sheet.name)
+      start.row = 1
+      cat("File doesn't exist.\n")
+    } else {
+      wb = loadWorkbook(filename)
+
+
+      if (! sheet.name %in% names(wb)) {
+        addWorksheet(wb, sheet.name)
+        start.row = 1
+      } else {
+        cat("Sheet exists.\n")
+        start.row = nrow(readWorkbook(filename,
+                                      sheet = sheet.name,
+                                      colNames = FALSE,
+                                      skipEmptyRows = FALSE))+5
+      }
+    }
+  }
+
+
+  all.param.combinations = expand.grid(param.values)
+
+  ### exclude the impossible combinations
+  # impossible.comb = c("with.total.muts" = FALSE, "tmb.logged" = TRUE)
+  filtered.combinations = all.param.combinations %>%
+    mutate(tmb.logged = ifelse(with.total.muts == FALSE, "FALSE", tmb.logged),
+           binary.status = ifelse(epistatic, "FALSE", binary.status)) %>%
+    unique()
+
+  ### running the survival_for_interactions for given model
+  lambda = function(age.at.diagnosis, with.total.muts, tmb.logged, binary.status, epistatic) {
+    survival_for_interactions(dataset = dataset,
+                              signatures = signatures,
+                              tissues = tissues,
+                              clin.df = clin.df,
+                              age.at.diagnosis = age.at.diagnosis,
+                              with.total.muts = with.total.muts,
+                              tmb.logged = tmb.logged,
+                              binary.status = binary.status,
+                              epistatic = epistatic)
+  }
+
+  best.model.loglik = -Inf
+  best.model = NULL
+  for (i in 1:nrow(filtered.combinations)) {
+    param.input = filtered.combinations[i,, drop = FALSE] %>% as.list
+
+    cat("i = ", i, "best.model.loglik = ", best.model.loglik, "\n" )
+    print(unlist(param.input))
+    if (param.input$epistatic) {
+      param.of.interactions = paste(sort(signatures), collapse = "*")
+    } else {
+      param.of.interactions = paste0("status",
+                                     paste(sort(signatures), collapse = "+"), collapse = "")
+    }
+
+    try({
+      # print(param.input)
+      ### Applying the survival_for_interactions
+      test.model = do.call(lambda,  param.input)
+      cat("model.loglik = ", test.model$coxout$loglik[2], "\n" )
+
+      ### Filtering for minimum sample fraction
+      sample.counts = test.model$survival.df$exists__12 %>% table()
+      sample.fractions = sample.counts / sum(sample.counts)
+      minority.sample.fraction = min(sample.fractions)
+
+      if (minority.sample.fraction < min.sample.fraction) {
+        cat("For Tissues == ", tissues, " and signatures == ", signatures,
+            "the minimum sample threshold of ", min.sample.fraction, " has not been met.\n",
+            "Skipping.\n")
+        break
+      }
+
+      # return(test.model)
+      model.coxout = test.model$coxout
+      p.val.of.interaction = summary(model.coxout)$coefficients[param.of.interactions,5]
+      p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
+
+      # if (p.val.of.interaction < 0.05) {
+      #   if (test.model$coxout$loglik[2] > best.model.loglik) {
+      #     best.model = list(params = param.input, out.model = test.model,
+      #                       minority.smp.fraction = minority.sample.fraction)
+      #
+      #     best.model.loglik = test.model$loglik
+      #     # cat("\ntissue = ", tissues, "\n")
+      #     # print(unlist(param.input) )
+      #     # cat("\n")
+      #   }
+      # }
+
+#       if(model.coxout$loglik[2] > best.model.loglik) {
+        if ( is.null(best.model) ) {
+          best.model = list(params = param.input, out.model = test.model,
+                            minority.smp.fraction = minority.sample.fraction, ind = i)
+          best.model.loglik = model.coxout$loglik[2]
+        } else {
+          plr.msg = paste0("PLR test for models ", i, " and ", best.model$ind)
+          cat(plr.msg, "\n")
+          plrtest.out = plrtest(model.coxout, best.model$out.model$coxout,
+                                nested = FALSE, adjusted = "BIC")
+
+          if (plrtest.out$pLRTA < 0.1) {
+            cat("Model1 fits better according to PLR.!!!!########!!!!!\n")
+            best.model = list(params = param.input, out.model = test.model,
+                              minority.smp.fraction = minority.sample.fraction, ind = i)
+            best.model.loglik = model.coxout$loglik[2]
+          }
+          # else {
+            # if (model.coxout$loglik[2] > best.model.loglik ) {
+            #   best.model = list(params = param.input, out.model = test.model,
+            #                     minority.smp.fraction = minority.sample.fraction, ind = i)
+            #   best.model.loglik = model.coxout$loglik[2]
+            # }
+          # }
+         }
+      # }
+
+      if (!is.null(filename)) {
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = paste0("Model ", i),
+                  colNames = TRUE,
+                  rowNames = FALSE,
+                  startRow = start.row)
+
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = formula.tools:::as.character.formula(model.coxout$formula),
+                  colNames = TRUE,
+                  rowNames = FALSE,
+                  startRow = start.row + 1)
+
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = summary(model.coxout)$coefficients,
+                  colNames = TRUE,
+                  rowNames = TRUE,
+                  startRow = start.row + 3,
+                  keepNA = TRUE,
+                  na.string = "NA")
+
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = "Model log-likelihoods",
+                  colNames = FALSE,
+                  rowNames = FALSE,
+                  startRow = start.row + 10,
+                  keepNA = TRUE,
+                  na.string = "NA")
+        writeData(wb = wb,
+                  sheet = sheet.name,
+                  x = setNames(model.coxout$loglik, c("initial", "final" )) %>%
+                    enframe() %>% t() %>% as.data.frame(),
+                  colNames = FALSE,
+                  rowNames = FALSE,
+                  startRow = start.row + 11,
+                  keepNA = TRUE,
+                  na.string = "NA")
+        if (exists("plr.msg")) {
+          writeData(wb = wb,
+                    sheet = sheet.name,
+                    x = plr.msg,
+                    colNames = FALSE,
+                    rowNames = FALSE,
+                    startRow = start.row + 15,
+                    keepNA = TRUE,
+                    na.string = "NA")
+
+          writeData(wb = wb,
+                    sheet = sheet.name,
+                    x = capture.output(print(plrtest.out)),
+                    colNames = FALSE,
+                    rowNames = FALSE,
+                    startRow = start.row + 16,
+                    keepNA = TRUE,
+                    na.string = "NA")
+
+        }
+        start.row = start.row + 33
+      }
+
+      saveWorkbook(wb, file = filename, overwrite = TRUE)
+
+    } )
+    # readline()
+  }
+
+  if (!is.null(filename)) {
+    if (rm.non.sig.sheets) {
+      if (p.val.of.interaction >0.05) {
+        wb = loadWorkbook(filename)
+        removeWorksheet(wb, sheetName = names(sheets[2]))
+        saveWorkbook(wb, filename, overwrite = TRUE)
+      }
+    }
+  }
+
   return(best.model)
 }
 
@@ -2107,7 +2441,9 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                dataset,
                                clin.df,
                                param.list,
-                               min.sample.fraction = 0) {
+                               min.sample.fraction = 0,
+                               filename = NULL,
+                               rm.non.sig.sheets = TRUE) {
 
   tt <- gridExtra::ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
                                   base_size = 10,
@@ -2143,7 +2479,9 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                               tissues = tissue,
                                               clin.df = clin.df,
                                               param.values = param.list,
-                                              min.sample.fraction = min.sample.fraction)
+                                              min.sample.fraction = min.sample.fraction,
+                                              filename = filename,
+                                              rm.non.sig.sheets = rm.non.sig.sheets)
       if ( is.null(surv.out$out.model) ) {
         cat("\tThe interaction is not significant. Skipping.\n")
         next
