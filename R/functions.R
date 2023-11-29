@@ -2173,8 +2173,9 @@ pick_survival_model_int = function(dataset,
         start.row = start.row + 33
       }
 
-      saveWorkbook(wb, file = filename, overwrite = TRUE)
-
+      if (!is.null(filename)) {
+        saveWorkbook(wb, file = filename, overwrite = TRUE)
+      }
     } )
     # readline()
   }
