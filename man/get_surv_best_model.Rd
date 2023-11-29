@@ -12,7 +12,9 @@ get_surv_best_model(
   dataset,
   clin.df,
   param.list,
-  min.sample.fraction = 0
+  min.sample.fraction = 0,
+  filename = NULL,
+  rm.non.sig.sheets = TRUE
 )
 }
 \arguments{
@@ -23,6 +25,11 @@ observed.}
 \item{dataset}{The signature values for all samples. E.g. PCAWG.full.subset.ann}
 
 \item{clin.df}{The dataframe with clinical info.}
+
+\item{filename}{The xlsx file where the models should be written.}
+
+\item{rm.non.sig.sheets}{If TRUE, then the interactions in which the best model
+doesn't show a significant interaction effect are removed from the sheet.}
 
 \item{with.total.muts}{If TRUE the total number of mutations in the samples will
 be provided as a confounder to the model. Default: TRUE}

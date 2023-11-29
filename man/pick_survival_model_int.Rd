@@ -10,7 +10,9 @@ pick_survival_model_int(
   tissues = tissue,
   clin.df = clin.df,
   param.values,
-  min.sample.fraction = 0
+  min.sample.fraction = 0,
+  filename = NULL,
+  rm.non.sig.sheets = TRUE
 )
 }
 \description{

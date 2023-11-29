@@ -9,6 +9,7 @@ get_surv_coxlist(
   sig.sig.tissues.matrix,
   dataset,
   clin.df,
+  age.at.diagnosis = TRUE,
   with.total.muts = TRUE,
   tmb.logged = TRUE,
   binary.status = FALSE,
