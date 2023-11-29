@@ -1966,8 +1966,8 @@ get_surv_bestcoxlist = function(sig.sig.tissues.matrix,
 #' @export
 
 pick_survival_model_int = function(dataset = dataset,
+                                   tissue,
                                    signatures = c(sig1, sig2),
-                                   tissues = tissue,
                                    clin.df = clin.df,
                                    param.values,
                                    min.sample.fraction = 0,
@@ -2024,7 +2024,7 @@ pick_survival_model_int = function(dataset = dataset,
   lambda = function(age.at.diagnosis, with.total.muts, tmb.logged, binary.status, epistatic) {
     survival_for_interactions(dataset = dataset,
                               signatures = signatures,
-                              tissues = tissues,
+                              tissues = tissue,
                               clin.df = clin.df,
                               age.at.diagnosis = age.at.diagnosis,
                               with.total.muts = with.total.muts,
@@ -2059,7 +2059,7 @@ pick_survival_model_int = function(dataset = dataset,
       minority.sample.fraction = min(sample.fractions)
 
       if (minority.sample.fraction < min.sample.fraction) {
-        cat("For Tissues == ", tissues, " and signatures == ", signatures,
+        cat("For Tissues == ", tissue, " and signatures == ", signatures,
             "the minimum sample threshold of ", min.sample.fraction, " has not been met.\n",
             "Skipping.\n")
         break
@@ -2076,7 +2076,7 @@ pick_survival_model_int = function(dataset = dataset,
       #                       minority.smp.fraction = minority.sample.fraction)
       #
       #     best.model.loglik = test.model$loglik
-      #     # cat("\ntissue = ", tissues, "\n")
+      #     # cat("\ntissue = ", tissue, "\n")
       #     # print(unlist(param.input) )
       #     # cat("\n")
       #   }
@@ -2252,8 +2252,8 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
     for (tissue in tissues) {
       cat("Attempting cox survival for:", tissue, "::", sig1, "+", sig2, "j = ", j, "\n")
       try({surv.out = pick_survival_model_int(dataset = dataset,
+                                              tissue = tissue,
                                               signatures = c(sig1, sig2),
-                                              tissues = tissue,
                                               clin.df = clin.df,
                                               param.values = param.list,
                                               min.sample.fraction = min.sample.fraction,
