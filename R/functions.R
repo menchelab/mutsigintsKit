@@ -1965,10 +1965,10 @@ get_surv_bestcoxlist = function(sig.sig.tissues.matrix,
 #' Tests a range of models
 #' @export
 
-pick_survival_model_int = function(dataset = dataset,
+pick_survival_model_int = function(dataset,
                                    tissue,
-                                   signatures = c(sig1, sig2),
-                                   clin.df = clin.df,
+                                   signatures,
+                                   clin.df,
                                    param.values,
                                    min.sample.fraction = 0,
                                    filename = NULL,
