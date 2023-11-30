@@ -2152,7 +2152,7 @@ pick_survival_model_int = function(dataset,
                 }
               }
             # }
-          } else if (plrtest.out$pLRTA < 0.1) {
+          } else if (!is.na(plrtest.out$pLRTA) & plrtest.out$pLRTA < 0.1) {
             cat("Model", i, " fits better according to PLR.!!!!########!!!!!\n")
             best.model = list(params = param.input, out.model = test.model,
                               minority.smp.fraction = minority.sample.fraction, ind = i,
