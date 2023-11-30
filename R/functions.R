@@ -2130,12 +2130,12 @@ pick_survival_model_int = function(dataset,
                                 nested = nested, adjusted = "BIC")
 
           if (nested) {
-            if (plrtest.out$pOmega < 0.1) {
-              cat("Model 1 and Model 2 are distinguishable.\n")
+            # if (plrtest.out$pOmega < 0.1) {
+            # cat("The two models are distinguishable.\n")
               if (length(setdiff(f1.vars, f2.vars) ) == 0 ) {
                 ### model.coxout is the simpler model
                 if (plrtest.out$pLRT > 0.1) { ### simpler model is prefered
-                  cat("Model", i," is the simpler model and fits better according to LRT.!!!!########!!!!!\n")
+                  cat("Model", i," is the simpler model and fits not worse according to LRT.!!!!########!!!!!\n")
                   best.model = list(params = param.input, out.model = test.model,
                                     minority.smp.fraction = minority.sample.fraction, ind = i,
                                     poi = param.of.interactions)
@@ -2151,7 +2151,7 @@ pick_survival_model_int = function(dataset,
                   best.model.loglik = model.coxout$loglik[2]
                 }
               }
-            }
+            # }
           } else if (plrtest.out$pLRTA < 0.1) {
             cat("Model", i, " fits better according to PLR.!!!!########!!!!!\n")
             best.model = list(params = param.input, out.model = test.model,
