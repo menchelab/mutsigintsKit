@@ -1615,8 +1615,8 @@ survival_for_interactions = function(dataset, clin.df, signatures,
                                 paste0(sig1, "+", sig2), "Others")
     survival.df$status = factor(survival.df$status,
                                 levels = c("Others", paste0(sig1, "+", sig2)))
-
   }
+
   if(get_df) {
     return(survival.df)
   }
@@ -2187,6 +2187,16 @@ pick_survival_model_int = function(dataset,
   }
 
   if (!is.null(filename)) {
+
+    writeData(wb = wb,
+              sheet = sheet.name,
+              x = paste0("Best model is Model ", best.model$ind),
+              colNames = FALSE,
+              rowNames = FALSE,
+              startRow = start.row,
+              keepNA = TRUE,
+              na.string = "NA")
+
     if (rm.non.sig.sheets) {
       p.val.of.interaction = summary(best.model$out.model$coxout)$coefficients[best.model$poi,5]
       p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
