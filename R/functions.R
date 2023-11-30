@@ -2212,6 +2212,16 @@ pick_survival_model_int = function(dataset,
               startRow = start.row,
               keepNA = TRUE,
               na.string = "NA")
+    writeData(wb = wb,
+              sheet = sheet.name,
+              x = paste0("p-value of interaction in this model: ", p.val.of.interaction),
+              colNames = FALSE,
+              rowNames = FALSE,
+              startRow = start.row + 1,
+              keepNA = TRUE,
+              na.string = "NA")
+
+
     saveWorkbook(wb, filename, overwrite = TRUE)
   cat("#######################################################################\n")
   cat("Apparently written in ", sheet.name, " at row ", start.row + 30, "\n")
