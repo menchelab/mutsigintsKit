@@ -14,7 +14,9 @@ get_surv_best_model(
   param.list,
   min.sample.fraction = 0,
   filename = NULL,
-  rm.non.sig.sheets = TRUE
+  rm.non.sig.sheets = TRUE,
+  return.only.sig = TRUE,
+  sig.threshold = 0.05
 )
 }
 \arguments{
@@ -30,6 +32,8 @@ observed.}
 
 \item{rm.non.sig.sheets}{If TRUE, then the interactions in which the best model
 doesn't show a significant interaction effect are removed from the sheet.}
+
+\item{sig.threshold}{Defines the significant threshold.}
 
 \item{with.total.muts}{If TRUE the total number of mutations in the samples will
 be provided as a confounder to the model. Default: TRUE}

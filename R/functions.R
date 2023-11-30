@@ -2249,6 +2249,7 @@ pick_survival_model_int = function(dataset,
 #' @param filename The xlsx file where the models should be written.
 #' @param rm.non.sig.sheets If TRUE, then the interactions in which the best model
 #' doesn't show a significant interaction effect are removed from the sheet.
+#' @param sig.threshold Defines the significant threshold.
 #' @export
 
 get_surv_best_model = function(sig.sig.tissues.matrix,
@@ -2258,7 +2259,8 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                min.sample.fraction = 0,
                                filename = NULL,
                                rm.non.sig.sheets = TRUE,
-                               return.only.sig = TRUE) {
+                               return.only.sig = TRUE,
+                               sig.threshold = 0.05) {
 
   tt <- gridExtra::ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
                                   base_size = 10,
@@ -2297,7 +2299,8 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                               min.sample.fraction = min.sample.fraction,
                                               filename = filename,
                                               rm.non.sig.sheets = rm.non.sig.sheets,
-                                              return.only.sig = return.only.sig)
+                                              return.only.sig = return.only.sig,
+                                              sig.threshold = sig.threshold)
       if ( is.null(surv.out$out.model) ) {
         cat("\tThe interaction is not significant. Skipping.\n")
         next

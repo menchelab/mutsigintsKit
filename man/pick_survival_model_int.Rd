@@ -5,14 +5,16 @@
 \title{Tests a range of models}
 \usage{
 pick_survival_model_int(
-  dataset = dataset,
-  signatures = c(sig1, sig2),
-  tissues = tissue,
-  clin.df = clin.df,
+  dataset,
+  tissue,
+  signatures,
+  clin.df,
   param.values,
   min.sample.fraction = 0,
   filename = NULL,
-  rm.non.sig.sheets = TRUE
+  rm.non.sig.sheets = TRUE,
+  return.only.sig = TRUE,
+  sig.threshold = 0.05
 )
 }
 \description{
