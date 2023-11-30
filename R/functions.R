@@ -2171,7 +2171,7 @@ pick_survival_model_int = function(dataset,
 
       if (!is.null(filename)) {
         writeData(wb = wb,
-                  sheet = sheet.name,
+                  sheet = sheet.name.full,
                   x = paste0("Model ", i),
                   colNames = TRUE,
                   rowNames = FALSE,
