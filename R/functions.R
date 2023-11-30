@@ -1987,7 +1987,13 @@ pick_survival_model_int = function(dataset,
   }
 
   if (!is.null(filename)) {
-    sheet.name = paste0(tissue, "__", signatures[1], "+",signatures[2])
+    sheet.name.full = paste0(tissue, "__", signatures[1], "+",signatures[2])
+    if(nchar(sheet.name.full) > 31) {
+      sheet.name = paste0(abbreviate(str_to_title(gsub("_", " ", tissue)), minlength = 5),
+                          "__", signatures[1], "+",signatures[2])
+    } else {
+      sheet.name = sheet.name.full
+    }
 
 
     if (!file.exists(filename)) {
@@ -1995,6 +2001,7 @@ pick_survival_model_int = function(dataset,
       addWorksheet(wb, sheet.name)
       start.row = 1
       cat("File doesn't exist.\n")
+
     } else {
       wb = loadWorkbook(filename)
 
@@ -2010,6 +2017,14 @@ pick_survival_model_int = function(dataset,
                                       skipEmptyRows = FALSE))+5
       }
     }
+    writeData(wb = wb,
+              sheet = sheet.name,
+              x = sheet.name,
+              colNames = TRUE,
+              rowNames = FALSE,
+              startRow = start.row)
+
+    startRow = startRow + 1
   }
 
 
