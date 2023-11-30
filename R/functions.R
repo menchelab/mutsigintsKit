@@ -2024,7 +2024,7 @@ pick_survival_model_int = function(dataset,
               rowNames = FALSE,
               startRow = start.row)
 
-    startRow = startRow + 1
+    start.row = start.row + 1
   }
 
 
