@@ -1579,8 +1579,7 @@ survival_for_interactions = function(dataset, clin.df, signatures,
                       ) ] )
 
   survival.df = cbind(survival.df, total_muts =
-                        rowSums(tissues.subset[, 4:ncol(tissues.subset)]),
-                      na.rm = TRUE)
+                        rowSums(tissues.subset[, 4:ncol(tissues.subset)], na.rm = TRUE))
 
   signatures = sort(signatures)
   sig1 = signatures[1]
