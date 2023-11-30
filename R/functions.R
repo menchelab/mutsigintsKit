@@ -2241,6 +2241,10 @@ pick_survival_model_int = function(dataset,
   }
 
   if (!is.null(filename)) {
+
+    p.val.of.interaction = summary(best.model$out.model$coxout)$coefficients[best.model$poi,5]
+    p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
+
     wb = loadWorkbook(filename)
     writeData(wb = wb,
               sheet = sheet.name,
@@ -2265,8 +2269,6 @@ pick_survival_model_int = function(dataset,
   cat("Apparently written in ", sheet.name, " at row ", start.row + 30, "\n")
   cat("#######################################################################\n")
     if (rm.non.sig.sheets) {
-      p.val.of.interaction = summary(best.model$out.model$coxout)$coefficients[best.model$poi,5]
-      p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
 
       print("#############################################")
       print(p.val.of.interaction)
