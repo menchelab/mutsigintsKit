@@ -2193,9 +2193,10 @@ pick_survival_model_int = function(dataset,
               x = paste0("Best model is Model ", best.model$ind),
               colNames = FALSE,
               rowNames = FALSE,
-              startRow = start.row + 30,
+              startRow = start.row + 20,
               keepNA = TRUE,
               na.string = "NA")
+    saveWorkbook(wb, filename, overwrite = TRUE)
   cat("#######################################################################\n")
   cat("Apparently written in ", sheet.name, " at row ", start.row + 30, "\n")
   cat("#######################################################################\n")
