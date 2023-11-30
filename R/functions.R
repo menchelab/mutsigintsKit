@@ -2060,6 +2060,9 @@ pick_survival_model_int = function(dataset,
 
     cat("i = ", i, "best.model.loglik = ", best.model.loglik, "\n" )
     print(unlist(param.input))
+
+    suppressWarnings(rm(plr.msg))
+
     if (param.input$epistatic) {
       param.of.interactions = paste(sort(signatures), collapse = "*")
     } else {
@@ -2109,9 +2112,6 @@ pick_survival_model_int = function(dataset,
                             poi = param.of.interactions)
           best.model.loglik = model.coxout$loglik[2]
         } else {
-          plr.msg = paste0("PLR test for models ", i, " and ", best.model$ind)
-          cat(plr.msg, "\n")
-
           #### Identify if the models are nested or not
 
           f1 = formula.tools::get.vars(model.coxout$formula)
@@ -2122,6 +2122,9 @@ pick_survival_model_int = function(dataset,
           nested = ifelse(length(setdiff(f1.vars, f2.vars) == 0) |
                             length(setdiff(f2.vars, f1.vars) == 0), TRUE, FALSE)
           #####
+
+          plr.msg = paste0("PLR test for models ", i, " and ", best.model$ind, "\tnested: ", nested)
+          cat(plr.msg, "\n")
 
           plrtest.out = plrtest(model.coxout, best.model$out.model$coxout,
                                 nested = nested, adjusted = "BIC")
