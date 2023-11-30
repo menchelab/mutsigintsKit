@@ -2036,6 +2036,9 @@ pick_survival_model_int = function(dataset,
 
   best.model.loglik = -Inf
   best.model = NULL
+
+
+
   for (i in 1:nrow(filtered.combinations)) {
     param.input = filtered.combinations[i,, drop = FALSE] %>% as.list
 
@@ -2199,6 +2202,8 @@ pick_survival_model_int = function(dataset,
       }
     }
   }
+
+
   if (return.only.sig) {
     if (p.val.of.interaction < 0.05) {
       return(best.model)
