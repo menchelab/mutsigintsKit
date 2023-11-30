@@ -2188,7 +2188,7 @@ pick_survival_model_int = function(dataset,
   }
 
   if (!is.null(filename)) {
-
+    wb = loadWorkbook(filename)
     writeData(wb = wb,
               sheet = sheet.name,
               x = paste0("Best model is Model ", best.model$ind),
