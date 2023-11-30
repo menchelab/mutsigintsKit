@@ -1972,7 +1972,8 @@ pick_survival_model_int = function(dataset,
                                    param.values,
                                    min.sample.fraction = 0,
                                    filename = NULL,
-                                   rm.non.sig.sheets = TRUE) {
+                                   rm.non.sig.sheets = TRUE,
+                                   return.only.sig = TRUE) {
   ### get all possible param values
   if (missing(param.values)) {
     param.values = list(
@@ -2198,8 +2199,15 @@ pick_survival_model_int = function(dataset,
       }
     }
   }
-
-  return(best.model)
+  if (return.only.sig) {
+    if (p.val.of.interaction < 0.05) {
+      return(best.model)
+    } else {
+      return (NULL)
+    }
+  } else {
+    return(best.model)
+  }
 }
 
 
@@ -2230,7 +2238,8 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                param.list,
                                min.sample.fraction = 0,
                                filename = NULL,
-                               rm.non.sig.sheets = TRUE) {
+                               rm.non.sig.sheets = TRUE,
+                               return.only.sig = TRUE) {
 
   tt <- gridExtra::ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
                                   base_size = 10,
@@ -2268,7 +2277,8 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                               param.values = param.list,
                                               min.sample.fraction = min.sample.fraction,
                                               filename = filename,
-                                              rm.non.sig.sheets = rm.non.sig.sheets)
+                                              rm.non.sig.sheets = rm.non.sig.sheets,
+                                              return.only.sig = return.only.sig)
       if ( is.null(surv.out$out.model) ) {
         cat("\tThe interaction is not significant. Skipping.\n")
         next
