@@ -1973,7 +1973,8 @@ pick_survival_model_int = function(dataset,
                                    min.sample.fraction = 0,
                                    filename = NULL,
                                    rm.non.sig.sheets = TRUE,
-                                   return.only.sig = TRUE) {
+                                   return.only.sig = TRUE,
+                                   sig.threshold = 0.05) {
   ### get all possible param values
   if (missing(param.values)) {
     param.values = list(
@@ -2207,7 +2208,7 @@ pick_survival_model_int = function(dataset,
       print("#############################################")
       print(p.val.of.interaction)
       print("#############################################")
-      if (p.val.of.interaction > 0.05) {
+      if (p.val.of.interaction > sig.threshold ) {
       print("removing the worksheet.")
         wb = loadWorkbook(filename)
         removeWorksheet(wb, sheet = sheet.name)
@@ -2218,7 +2219,7 @@ pick_survival_model_int = function(dataset,
 
 
   if (return.only.sig) {
-    if (p.val.of.interaction < 0.05) {
+    if (p.val.of.interaction < sig.threshold) {
       return(best.model)
     } else {
       return (NULL)
