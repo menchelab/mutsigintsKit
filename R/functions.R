@@ -2193,7 +2193,7 @@ pick_survival_model_int = function(dataset,
               x = paste0("Best model is Model ", best.model$ind),
               colNames = FALSE,
               rowNames = FALSE,
-              startRow = start.row,
+              startRow = start.row + 30,
               keepNA = TRUE,
               na.string = "NA")
 
