@@ -2111,8 +2111,20 @@ pick_survival_model_int = function(dataset,
         } else {
           plr.msg = paste0("PLR test for models ", i, " and ", best.model$ind)
           cat(plr.msg, "\n")
+
+          #### Identify if the models are nested or not
+
+          f1 = formula.tools::get.vars(model.coxout$formula)
+          f2 = formula.tools::get.vars(best.model$out.model$coxout$formula)
+
+          f1.vars = f1[2:length(f1)] %>% unlist()
+          f2.vars = f2[2:length(f2)] %>% unlist()
+          nested = ifelse(length(setdiff(f1.vars, f2.vars) == 0) |
+                            length(setdiff(f2.vars, f1.vars) == 0), TRUE, FALSE)
+          #####
+
           plrtest.out = plrtest(model.coxout, best.model$out.model$coxout,
-                                nested = FALSE, adjusted = "BIC")
+                                nested = nested, adjusted = "BIC")
 
           if (plrtest.out$pLRTA < 0.1) {
             cat("Model1 fits better according to PLR.!!!!########!!!!!\n")
