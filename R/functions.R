@@ -2119,8 +2119,8 @@ pick_survival_model_int = function(dataset,
 
           f1.vars = f1[2:length(f1)] %>% unlist()
           f2.vars = f2[2:length(f2)] %>% unlist()
-          nested = ifelse(length(setdiff(f1.vars, f2.vars) == 0) |
-                            length(setdiff(f2.vars, f1.vars) == 0), TRUE, FALSE)
+          nested = ifelse(length(setdiff(f1.vars, f2.vars) ) == 0 |
+                            length(setdiff(f2.vars, f1.vars) ) == 0, TRUE, FALSE)
           #####
 
           plr.msg = paste0("PLR test for models ", i, " and ", best.model$ind, "\tnested: ", nested)
