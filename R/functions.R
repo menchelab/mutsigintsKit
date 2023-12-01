@@ -2240,10 +2240,10 @@ pick_survival_model_int = function(dataset,
     # readline()
   }
 
-  if (!is.null(filename)) {
+  p.val.of.interaction = summary(best.model$out.model$coxout)$coefficients[best.model$poi,5]
+  p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
 
-    p.val.of.interaction = summary(best.model$out.model$coxout)$coefficients[best.model$poi,5]
-    p.val.of.interaction = ifelse(is.na(p.val.of.interaction), 1, p.val.of.interaction)
+  if (!is.null(filename)) {
 
     wb = loadWorkbook(filename)
     writeData(wb = wb,
