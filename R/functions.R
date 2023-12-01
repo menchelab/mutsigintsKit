@@ -1987,7 +1987,9 @@ pick_survival_model_int = function(dataset,
   }
 
   if (!is.null(filename)) {
+
     sheet.name.full = paste0(tissue, "__", signatures[1], "+",signatures[2])
+
     if(nchar(sheet.name.full) > 31) {
       sheet.name = paste0(abbreviate(str_to_title(gsub("_", " ", tissue)), minlength = 5),
                           "__", signatures[1], "+",signatures[2])
@@ -2018,7 +2020,7 @@ pick_survival_model_int = function(dataset,
       }
     }
     writeData(wb = wb,
-              sheet = sheet.name,
+              sheet = sheet.name.full,
               x = sheet.name,
               colNames = TRUE,
               rowNames = FALSE,
@@ -2171,7 +2173,7 @@ pick_survival_model_int = function(dataset,
 
       if (!is.null(filename)) {
         writeData(wb = wb,
-                  sheet = sheet.name.full,
+                  sheet = sheet.name,
                   x = paste0("Model ", i),
                   colNames = TRUE,
                   rowNames = FALSE,
