@@ -2733,12 +2733,12 @@ plot_HR_vars = function(all.conds.df, param, average = TRUE, log.HR = FALSE, no_
                          lower.95 = log(lower.95),
                          upper.95 = log(upper.95),
                          sig.effect = as.character(sign(upper.95 * lower.95) ) )
-      df = df %>% mutate(sig.effect = as.character(sign(upper.95 * lower.95) ) )
+
       p = ggplot(df, aes(y = tissue, x = estimate, color = int, alpha = sig.effect) )
     }
   }
 
-  p = p + scale_alpha_manual(values = c("-1" = 0.4, "1" = 1))
+  p = p + scale_alpha_manual(values = c("-1" = 0.4, "0" = 0.2, "1" = 1))
 
 
   p = p + geom_point(position=position_dodge(1), shape = 15, size = 3) +
