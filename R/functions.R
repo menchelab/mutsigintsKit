@@ -1485,6 +1485,73 @@ get_relevant_clin_df = function(clin.df, dataset, is.TCGA, tissues) {
 }
 
 
+
+#' Survival analysis for covariates with Cox proportional
+#' hazards regression model.
+#'
+#' @param dataset Signature-activities for samples. E.g.PCAWG.full.subset.ann.
+#' The first three columns are Cancer.Types, Sample.Names, Accuracy and fourth on
+#' signature activities.
+#' @param clin.df Clinical data for samples. E.g. PCAWG.clin.df.
+#' @param signatures A vector of two signatures which should be considered for
+#' survival analysis.
+#' @param tissue A vector of tissues where the interaction of signatures should
+#' be assessed.
+#' @param with.total.muts If TRUE the total number of mutations in the samples will
+#' be provided as a covariate to the model. Default: TRUE
+#' @param tmb.logged If TRUE the tumor mutational burden will be logged.
+#' Default: TRUE
+#'
+#' @export
+
+survival_for_covariates = function(dataset,
+                                   clin.df,
+                                   tissue,
+                                   age.at.diagnosis = FALSE,
+                                   with.total.muts = FALSE,
+                                   tmb.logged = TRUE) {
+
+  relevant.clin.df.out = get_relevant_clin_df(clin.df = PCAWG.clin.df,
+                                              dataset = PCAWG.full.subset.ann,
+                                              is.TCGA = FALSE, tissues = tissue)
+
+  relevant.clin.df =  relevant.clin.df.out$relevant.clin.df
+  tissues.subset = relevant.clin.df.out$tissues.subset
+
+  survival.df = cbind(tissues.subset[, 1:3],
+                      relevant.clin.df[, c("survival_time", "vital_status",
+                                           "age_at_diagnosis"#, "sex"
+                      ) ] )
+
+  survival.df = cbind(survival.df, total_muts =
+                        rowSums(tissues.subset[, 4:ncol(tissues.subset)], na.rm = TRUE))
+
+
+  formula.string = "Surv(survival_time, vital_status) ~ "
+
+  if (age.at.diagnosis) {
+    formula.string = paste0(formula.string, " + age_at_diagnosis")
+  }
+
+  if (length(tissues) > 1) {
+    formula.string = paste0(formula.string, " + Cancer.Types")
+  }
+
+  if (with.total.muts) {
+    if (tmb.logged) {
+      formula.string = paste0(formula.string, " + log(total_muts + 1)")
+    } else {
+      formula.string = paste0(formula.string, " + total_muts")
+    }
+  }
+  formula.string = gsub("~  +", "~", formula.string, fixed = TRUE)
+  cox.out <- coxph(as.formula(formula.string), data = survival.df,
+                   x = TRUE)
+
+  return(cox.out)
+}
+
+
 #' Survival analysis for signature-signature interactions with Cox proportional
 #' hazards regression model.
 #'
@@ -1498,7 +1565,7 @@ get_relevant_clin_df = function(clin.df, dataset, is.TCGA, tissues) {
 #' be assessed.
 #' @param legend_pos Legend position. Default: c(0.8, 0.8).
 #' @param with.total.muts If TRUE the total number of mutations in the samples will
-#' be provided as a confounder to the model. Default: TRUE
+#' be provided as a covariate to the model. Default: TRUE
 #' @param tmb.logged If TRUE the tumor mutational burden will be logged.
 #' Default: TRUE
 #' @param binary.status If TRUE, the model will compare samples with both signatures
@@ -1731,7 +1798,7 @@ survival_for_interactions = function(dataset, clin.df, signatures,
 #' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
 #' @param clin.df The dataframe with clinical info.
 #' @param with.total.muts If TRUE the total number of mutations in the samples will
-#' be provided as a confounder to the model. Default: TRUE
+#' be provided as a covariate to the model. Default: TRUE
 #' @param tmb.logged If TRUE the tumor mutational burden will be logged.
 #' Default: TRUE
 #' @param binary.status If TRUE, the model will compare samples with both signatures
@@ -1823,7 +1890,7 @@ get_surv_plotlist = function(sig.sig.tissues.matrix,
 #' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
 #' @param clin.df The dataframe with clinical info.
 #' @param with.total.muts If TRUE the total number of mutations in the samples will
-#' be provided as a confounder to the model. Default: TRUE
+#' be provided as a covariate to the model. Default: TRUE
 #' @param tmb.logged If TRUE the tumor mutational burden will be logged.
 #' Default: TRUE
 #' @param binary.status If TRUE, the model will compare samples with both signatures
@@ -1901,7 +1968,7 @@ get_surv_coxlist = function(sig.sig.tissues.matrix,
 #' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
 #' @param clin.df The dataframe with clinical info.
 #' @param with.total.muts If TRUE the total number of mutations in the samples will
-#' be provided as a confounder to the model. Default: TRUE
+#' be provided as a covariate to the model. Default: TRUE
 #' @param tmb.logged If TRUE the tumor mutational burden will be logged.
 #' Default: TRUE
 #' @param binary.status If TRUE, the model will compare samples with both signatures
@@ -2307,7 +2374,7 @@ pick_survival_model_int = function(dataset,
 #' @param dataset The signature values for all samples. E.g. PCAWG.full.subset.ann
 #' @param clin.df The dataframe with clinical info.
 #' @param with.total.muts If TRUE the total number of mutations in the samples will
-#' be provided as a confounder to the model. Default: TRUE
+#' be provided as a covariate to the model. Default: TRUE
 #' @param tmb.logged If TRUE the tumor mutational burden will be logged.
 #' Default: TRUE
 #' @param binary.status If TRUE, the model will compare samples with both signatures

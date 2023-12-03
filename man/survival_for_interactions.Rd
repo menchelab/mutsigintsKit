@@ -36,7 +36,7 @@ be assessed.}
 \item{legend_pos}{Legend position. Default: c(0.8, 0.8).}
 
 \item{with.total.muts}{If TRUE the total number of mutations in the samples will
-be provided as a confounder to the model. Default: TRUE}
+be provided as a covariate to the model. Default: TRUE}
 
 \item{tmb.logged}{If TRUE the tumor mutational burden will be logged.
 Default: TRUE}

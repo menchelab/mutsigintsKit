@@ -36,7 +36,7 @@ doesn't show a significant interaction effect are removed from the sheet.}
 \item{sig.threshold}{Defines the significant threshold.}
 
 \item{with.total.muts}{If TRUE the total number of mutations in the samples will
-be provided as a confounder to the model. Default: TRUE}
+be provided as a covariate to the model. Default: TRUE}
 
 \item{tmb.logged}{If TRUE the tumor mutational burden will be logged.
 Default: TRUE}
