@@ -2798,7 +2798,7 @@ surv_add_param_fillers = function(dinput, param) {
 
     out = do.call(rbind, lapply(unique(drun$cond), function(cc) {
       orig.data %>% filter(cond == cc) %>%
-        mutate(estimate = 0, lower.95 = 0, upper.95 = 0, P.val = 1,
+        mutate(estimate = 1, lower.95 = 1, upper.95 = 1, P.val = 1,
                params = param, sig.star = " ") %>%
         unique ()
     } ) )
