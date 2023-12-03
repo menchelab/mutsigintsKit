@@ -2802,12 +2802,13 @@ plot_param_piechart = function(dinput, param, add.param = FALSE) {
     out = do.call(rbind, lapply(unique(drun$cond), function(cc) {
       orig.data %>% filter(cond == cc) %>%
         mutate(estimate = 0, lower.95 = 0, upper.95 = 0, P.val = 1,
-               params = param, sig.star = "") %>%
+               params = param, sig.star = " ") %>%
         unique ()
     } ) )
     row.names(out) = NULL
     return(out)
   }
+
   if (add.param) {
     dinput = dinput %>%
       group_by(cond) %>%
@@ -2821,7 +2822,7 @@ plot_param_piechart = function(dinput, param, add.param = FALSE) {
   data.tissues = dinput %>%
     filter(params == param) %>%
     mutate(HR.sign = estimate > 1,
-           significance = ifelse(sig.star != " ", TRUE, FALSE),
+           significance = ifelse(grepl("*", sig.star, fixed = TRUE), TRUE, FALSE),
            HR.sign = ifelse(significance == FALSE, FALSE, HR.sign)) %>%
     group_by(tissue, significance, HR.sign) %>%
     select(tissue, significance, HR.sign) %>% unique() %>%
