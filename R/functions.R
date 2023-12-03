@@ -2814,7 +2814,7 @@ plot_param_piechart = function(dinput, param, add.param = FALSE) {
       summarise(non.param = all(params != param)) %>%
       filter(non.param) %>%
       ungroup() %>%
-      do(add_param_row(., orig.data, param)) %>%
+      do(add_param_row(., dinput, param)) %>%
       bind_rows(dinput, .) %>%
       arrange(cond, params)
   }
