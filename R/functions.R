@@ -1533,7 +1533,7 @@ survival_for_covariates = function(dataset,
     formula.string = paste0(formula.string, " + age_at_diagnosis")
   }
 
-  if (length(tissues) > 1) {
+  if (length(tissue) > 1) {
     formula.string = paste0(formula.string, " + Cancer.Types")
   }
 
