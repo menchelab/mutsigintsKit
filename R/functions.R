@@ -2766,13 +2766,13 @@ plot_HR_vars = function(all.conds.df, param, average = TRUE, log.HR = FALSE, no_
 
   tissue.increasing.order = all.conds.df %>%
     filter(params == param) %>%
-    arrange(estimate) %>%
+    arrange(estimate, tissue) %>%
     pull(tissue) %>%
     unique()
 
   all.conds.df = all.conds.df %>%
     filter(params == param) %>%
-    arrange(estimate) %>%
+    arrange(estimate, tissue) %>%
     mutate(tissue = factor(tissue, levels = tissue.increasing.order))
   # all.conds.df$tissue = factor(all.conds.df$tissue,
   #                       levels = sort(unique(all.conds.df$tissue)))
