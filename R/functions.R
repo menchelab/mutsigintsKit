@@ -1501,6 +1501,7 @@ get_relevant_clin_df = function(clin.df, dataset, is.TCGA, tissues) {
 #' be provided as a covariate to the model. Default: TRUE
 #' @param tmb.logged If TRUE the tumor mutational burden will be logged.
 #' Default: TRUE
+#' @param is.TCGA TRUE for TCGA
 #'
 #' @export
 
@@ -1509,11 +1510,12 @@ survival_for_covariates = function(dataset,
                                    tissue,
                                    age.at.diagnosis = FALSE,
                                    with.total.muts = FALSE,
-                                   tmb.logged = TRUE) {
+                                   tmb.logged = TRUE,
+                                   is.TCGA = FALSE) {
 
-  relevant.clin.df.out = get_relevant_clin_df(clin.df = PCAWG.clin.df,
-                                              dataset = PCAWG.full.subset.ann,
-                                              is.TCGA = FALSE, tissues = tissue)
+  relevant.clin.df.out = get_relevant_clin_df(clin.df = clin.df,
+                                              dataset = dataset,
+                                              is.TCGA = is.TCGA, tissues = tissue)
 
   relevant.clin.df =  relevant.clin.df.out$relevant.clin.df
   tissues.subset = relevant.clin.df.out$tissues.subset

@@ -11,7 +11,8 @@ survival_for_covariates(
   tissue,
   age.at.diagnosis = FALSE,
   with.total.muts = FALSE,
-  tmb.logged = TRUE
+  tmb.logged = TRUE,
+  is.TCGA = FALSE
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ be provided as a covariate to the model. Default: TRUE}
 
 \item{tmb.logged}{If TRUE the tumor mutational burden will be logged.
 Default: TRUE}
+
+\item{is.TCGA}{TRUE for TCGA}
 
 \item{signatures}{A vector of two signatures which should be considered for
 survival analysis.}
