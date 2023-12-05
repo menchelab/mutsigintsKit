@@ -2446,7 +2446,9 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
       out_coxlist[[paste(tissue, "::", sig1, "+", sig2)]] =
         list(input.params = unlist(surv.out$params),
              model = surv.out$out.model$coxout,
-             minority.smp.fraction = surv.out$minority.smp.fraction)} )
+             minority.smp.fraction = surv.out$minority.smp.fraction,
+             survival.df = surv.out$survival.df,
+             survP = surv.out$survP)} )
     }
   }
   return(out_coxlist)
