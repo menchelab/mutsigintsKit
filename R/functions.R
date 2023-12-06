@@ -2766,11 +2766,24 @@ HR_summary_for_all = function(interaction.summaries, type = NULL) {
 
 plot_HR_vars = function(all.conds.df, param, average = TRUE, log.HR = FALSE, no_stripes = TRUE) {
 
-  tissue.increasing.order = all.conds.df %>%
-    filter(params == param) %>%
-    arrange(estimate, tissue) %>%
-    pull(tissue) %>%
-    unique()
+  if (average) {
+    tissue.increasing.order = all.conds.df %>%
+      filter(params == param) %>%
+      group_by(tissue) %>%
+      summarize(estimate = mean(estimate),
+                lower.95 = mean(lower.95),
+                upper.95 = mean(upper.95)) %>%
+      arrange(estimate, tissue) %>%
+      pull(tissue) %>%
+      unique()
+  } else{
+    tissue.increasing.order = all.conds.df %>%
+      filter(params == param) %>%
+      arrange(estimate, tissue) %>%
+      pull(tissue) %>%
+      unique()
+
+  }
 
   all.conds.df = all.conds.df %>%
     filter(params == param) %>%
