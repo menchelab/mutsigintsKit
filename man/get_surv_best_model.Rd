@@ -16,7 +16,8 @@ get_surv_best_model(
   filename = NULL,
   rm.non.sig.sheets = TRUE,
   return.only.sig = TRUE,
-  sig.threshold = 0.05
+  sig.threshold = 0.05,
+  split.by.tissue = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ observed.}
 doesn't show a significant interaction effect are removed from the sheet.}
 
 \item{sig.threshold}{Defines the significant threshold.}
+
+\item{split.by.tissue}{If TRUE for a given interaction the models are fit individually.}
 
 \item{with.total.muts}{If TRUE the total number of mutations in the samples will
 be provided as a covariate to the model. Default: TRUE}

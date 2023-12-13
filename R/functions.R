@@ -2386,6 +2386,7 @@ pick_survival_model_int = function(dataset,
 #' @param rm.non.sig.sheets If TRUE, then the interactions in which the best model
 #' doesn't show a significant interaction effect are removed from the sheet.
 #' @param sig.threshold Defines the significant threshold.
+#' @param split.by.tissue If TRUE for a given interaction the models are fit individually.
 #' @export
 
 get_surv_best_model = function(sig.sig.tissues.matrix,
@@ -2396,7 +2397,8 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
                                filename = NULL,
                                rm.non.sig.sheets = TRUE,
                                return.only.sig = TRUE,
-                               sig.threshold = 0.05) {
+                               sig.threshold = 0.05,
+                               split.by.tissue = TRUE) {
 
   tt <- gridExtra::ttheme_default(colhead=list(fg_params = list(parse=TRUE)),
                                   base_size = 10,
@@ -2425,10 +2427,37 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
     sig2 = colnames(sig.sig.tissues.matrix)[indices[2]]
 
     tissues = strsplit(sig.sig.tissues.matrix[indices[1], indices[2]], split = ", ")[[1]]
-    for (tissue in tissues) {
-      cat("Attempting cox survival for:", tissue, "::", sig1, "+", sig2, "j = ", j, "\n")
+
+    if (split.by.tissue) {
+
+      for (tissue in tissues) {
+        cat("Attempting cox survival for:", tissue, "::", sig1, "+", sig2, "j = ", j, "\n")
+        try({surv.out = pick_survival_model_int(dataset = dataset,
+                                                tissue = tissue,
+                                                signatures = c(sig1, sig2),
+                                                clin.df = clin.df,
+                                                param.values = param.list,
+                                                min.sample.fraction = min.sample.fraction,
+                                                filename = filename,
+                                                rm.non.sig.sheets = rm.non.sig.sheets,
+                                                return.only.sig = return.only.sig,
+                                                sig.threshold = sig.threshold)
+        if ( is.null(surv.out$out.model) ) {
+          cat("\tThe interaction is not significant. Skipping.\n")
+          next
+        }
+
+        j = j + 1
+        out_coxlist[[paste(tissue, "::", sig1, "+", sig2)]] =
+          list(input.params = unlist(surv.out$params),
+               model = surv.out$out.model$coxout,
+               minority.smp.fraction = surv.out$minority.smp.fraction,
+               survival.df = surv.out$out.model$survival.df,
+               survP = surv.out$out.model$survP)} )
+      }
+    } else {
       try({surv.out = pick_survival_model_int(dataset = dataset,
-                                              tissue = tissue,
+                                              tissue = tissues,
                                               signatures = c(sig1, sig2),
                                               clin.df = clin.df,
                                               param.values = param.list,
@@ -2443,7 +2472,7 @@ get_surv_best_model = function(sig.sig.tissues.matrix,
       }
 
       j = j + 1
-      out_coxlist[[paste(tissue, "::", sig1, "+", sig2)]] =
+      out_coxlist[[paste(sig1, "+", sig2)]] =
         list(input.params = unlist(surv.out$params),
              model = surv.out$out.model$coxout,
              minority.smp.fraction = surv.out$minority.smp.fraction,
