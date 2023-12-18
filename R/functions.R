@@ -2978,12 +2978,13 @@ plot_param_piechart = function(dinput, param, add.param = FALSE) {
 #' @param data The summary data across tissues and
 #' models generated with HR_summary_for_all.
 #' @param log.HR Indicated whether the hazard ratio is logged or not.
+#' @param threshold The p.value threshold. Default: 0.05
 #' @export
 
-plot_sigint_forest = function(data, log.HR = TRUE) {
+plot_sigint_forest = function(data, log.HR = TRUE, threshold = 0.05) {
   data.processed = data %>%
     drop_na() %>%
-    filter(P.val < 0.05, ! is.infinite(lower.95), ! is.infinite(upper.95),
+    filter(P.val < threshold, ! is.infinite(lower.95), ! is.infinite(upper.95),
            ! is.infinite(log(lower.95) ), ! is.infinite(log(upper.95)) ) %>%
     filter(grepl("[+*]", params)) %>%
     filter(! params %in% c("age_at_diagnosis", "log(total_muts + 1)"))

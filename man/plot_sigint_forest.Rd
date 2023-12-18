@@ -5,13 +5,15 @@
 \title{Make forest plot for all the significant interaction paramters from the
 survival models.}
 \usage{
-plot_sigint_forest(data, log.HR = TRUE)
+plot_sigint_forest(data, log.HR = TRUE, threshold = 0.05)
 }
 \arguments{
 \item{data}{The summary data across tissues and
 models generated with HR_summary_for_all.}
 
 \item{log.HR}{Indicated whether the hazard ratio is logged or not.}
+
+\item{threshold}{The p.value threshold. Default: 0.05}
 }
 \description{
 Make forest plot for all the significant interaction paramters from the
