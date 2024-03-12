@@ -1,5 +1,5 @@
 #' Signature annotations based on cosmic and curated by
-#' hakobyan et al., 2023
+#' hakobyan et al., 2024
 #'
 #' @format A dataframe with 72 rows and 5 columns:
 #'    \describe{
