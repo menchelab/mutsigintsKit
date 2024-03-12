@@ -1,73 +1,73 @@
-"Signature"	"Class"	"Description"	"Annotation"	"Origin"
-"SBS1"	"Ageing"	"Ageing"	"Ageing"	"Clock-like"
-"SBS2"	"APOBEC/AID"	"APOBEC"	"APOBEC"	"Endogenous"
-"SBS3"	"BER/HR"	"HR"	"HR"	"Endogenous"
-"SBS4"	"Environ"	"Tobacco-smoking"	"Tobacco"	"Environmental"
-"SBS5"	"Unknown"	"Unknown"	"SBS5"	"Clock-like"
-"SBS6"	"MMR"	"MMR"	"MMR"	"Endogenous"
-"SBS7a"	"UV"	"UV"	"UV"	"Environmental"
-"SBS7b"	"UV"	"UV"	"UV"	"Environmental"
-"SBS7c"	"UV"	"UV"	"UV"	"Environmental"
-"SBS7d"	"UV"	"UV"	"UV"	"Environmental"
-"SBS8"	"Unknown"	"Unknown"	"SBS8"	"Unknown"
-"SBS9"	"Polymerase"	"PolH"	"PolH"	"Endogenous"
-"SBS10a"	"Polymerase"	"PolE"	"PolE"	"Endogenous"
-"SBS10b"	"Polymerase"	"PolE"	"PolE"	"Endogenous"
-"SBS11"	"Chemo"	"Temozolomide treatment "	"Chemo"	"Environmental"
-"SBS12"	"Unknown"	"Unknown"	"SBS12"	"Unknown"
-"SBS13"	"APOBEC/AID"	"APOBEC"	"APOBEC"	"Endogenous"
-"SBS14"	"MMR"	"PolE + MMR"	"MMR"	"Endogenous"
-"SBS15"	"MMR"	"MMR"	"MMR"	"Endogenous"
-"SBS16"	"Unknown"	"Unknown"	"SBS16"	"Unknown"
-"SBS17a"	"Unknown"	"Unknown"	"SBS17"	"Unknown"
-"SBS17b"	"Unknown"	"Unknown"	"SBS17"	"Unknown"
-"SBS18"	"Environ"	"ROS"	"ROS"	"Endogenous"
-"SBS19"	"Unknown"	"Unknown"	"SBS19"	"Unknown"
-"SBS20"	"MMR"	"POLD1 + MMR"	"MMR"	"Endogenous"
-"SBS21"	"MMR"	"MMR"	"MMR"	"Endogenous"
-"SBS22"	"Environ"	"Aristolochic acid"	"AA"	"Environmental"
-"SBS23"	"Unknown"	"Unknown"	"SBS23"	"Unknown"
-"SBS24"	"Environ"	"Aflatoxin"	"Aflatoxin"	"Environmental"
-"SBS25"	"Chemo"	"Chemotherapy"	"Chemo"	"Environmental"
-"SBS26"	"MMR"	"MMR"	"MMR"	"Endogenous"
-"SBS27"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS28"	"Unknown"	"Unknown"	"SBS28"	"Unknown"
-"SBS29"	"Environ"	"Tobacco chewing"	"SBS29"	"Environmental"
-"SBS30"	"BER/HR"	"NTHL1"	"SBS30"	"Endogenous"
-"SBS31"	"Chemo"	"Platinium chemotherapy"	"Chemo"	"Environmental"
-"SBS32"	"Chemo"	"Azathioprine "	"Chemo"	"Environmental"
-"SBS33"	"Unknown"	"Unknown"	"SBS33"	"Unknown"
-"SBS34"	"Unknown"	"Unknown"	"SBS34"	"Unknown"
-"SBS35"	"Chemo"	"Platinium chemotherapy"	"Chemo"	"Environmental"
-"SBS36"	"BER/HR"	"MUTYH"	"MUTYH"	"Endogenous"
-"SBS37"	"Unknown"	"Unknown"	"SBS37"	"Unknown"
-"SBS38"	"UV"	"Indirect effect of UV"	"SBS38"	"Environmental"
-"SBS39"	"Unknown"	"Unknown"	"SBS39"	"Unknown"
-"SBS40"	"Unknown"	"Unknown"	"SBS40"	"Clock-like"
-"SBS41"	"Unknown"	"Unknown"	"SBS41"	"Unknown"
-"SBS42"	"Environ"	"Haloalkane exposure"	"Haloalkane"	"Environmental"
-"SBS43"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS44"	"MMR"	"MMR"	"MMR"	"Endogenous"
-"SBS45"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS46"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS47"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS48"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS49"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS50"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS51"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS52"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS53"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS54"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS55"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS56"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS57"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS58"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS59"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS60"	"Technical"	"Technical"	"Technical"	"Unknown"
-"SBS84"	"APOBEC/AID"	"AID"	"AID"	"Endogenous"
-"SBS85"	"APOBEC/AID"	"Indirect effect of AID"	"AID"	"Endogenous"
-"SBS86"	"Chemo"	"Unknown chemotherapy exposure"	"Chemo"	"Environmental"
-"SBS87"	"Chemo"	"Thiopurine chemotherapy"	"Chemo"	"Environmental"
-"SBS88"	"Environ"	"Colibactin exposure"	"Colibactin"	"Environmental"
-"SBS89"	"Unknown"	"Unknown"	"SBS89"	"Unknown"
-"SBS90"	"Chemo"	"Duocarmycin exposure"	"Chemo"	"Environmental"
+Signature	Class	Description	Annotation	Origin
+SBS1	Ageing	Ageing	CL SBS1	Clock-like
+SBS2	APOBEC/AID	APOBEC	APOBEC	Endogenous
+SBS3	BER/HR	HR	HR	Endogenous
+SBS4	Environ	Tobacco-smoking	Tobacco	Environmental
+SBS5	Unknown	Unknown	CL SBS5	Clock-like
+SBS6	MMR	MMR	MMR	Endogenous
+SBS7a	UV	UV	UV	Environmental
+SBS7b	UV	UV	UV	Environmental
+SBS7c	UV	UV	UV	Environmental
+SBS7d	UV	UV	UV	Environmental
+SBS8	Unknown	Unknown	SBS8	Unknown
+SBS9	Polymerase	PolH	PolH	Endogenous
+SBS10a	Polymerase	PolE	PolE	Endogenous
+SBS10b	Polymerase	PolE	PolE	Endogenous
+SBS11	Chemo	Temozolomide treatment 	Chemo	Environmental
+SBS12	Unknown	Unknown	SBS12	Unknown
+SBS13	APOBEC/AID	APOBEC	APOBEC	Endogenous
+SBS14	MMR	PolE + MMR	MMR	Endogenous
+SBS15	MMR	MMR	MMR	Endogenous
+SBS16	Unknown	Unknown	SBS16	Unknown
+SBS17a	Unknown	Unknown	SBS17	Unknown
+SBS17b	Unknown	Unknown	SBS17	Unknown
+SBS18	Environ	ROS	ROS	Endogenous
+SBS19	Unknown	Unknown	SBS19	Unknown
+SBS20	MMR	POLD1 + MMR	MMR	Endogenous
+SBS21	MMR	MMR	MMR	Endogenous
+SBS22	Environ	Aristolochic acid	AA	Environmental
+SBS23	Unknown	Unknown	SBS23	Unknown
+SBS24	Environ	Aflatoxin	Aflatoxin	Environmental
+SBS25	Chemo	Chemotherapy	Chemo	Environmental
+SBS26	MMR	MMR	MMR	Endogenous
+SBS27	Technical	Technical	Technical	Unknown
+SBS28	Unknown	Unknown	SBS28	Unknown
+SBS29	Environ	Tobacco chewing	SBS29	Environmental
+SBS30	BER/HR	NTHL1	SBS30	Endogenous
+SBS31	Chemo	Platinium chemotherapy	Chemo	Environmental
+SBS32	Chemo	Azathioprine 	Chemo	Environmental
+SBS33	Unknown	Unknown	SBS33	Unknown
+SBS34	Unknown	Unknown	SBS34	Unknown
+SBS35	Chemo	Platinium chemotherapy	Chemo	Environmental
+SBS36	BER/HR	MUTYH	MUTYH	Endogenous
+SBS37	Unknown	Unknown	SBS37	Unknown
+SBS38	UV	Indirect effect of UV	SBS38	Environmental
+SBS39	Unknown	Unknown	SBS39	Unknown
+SBS40	Unknown	Unknown	SBS40	Clock-like
+SBS41	Unknown	Unknown	SBS41	Unknown
+SBS42	Environ	Haloalkane exposure	Haloalkane	Environmental
+SBS43	Technical	Technical	Technical	Unknown
+SBS44	MMR	MMR	MMR	Endogenous
+SBS45	Technical	Technical	Technical	Unknown
+SBS46	Technical	Technical	Technical	Unknown
+SBS47	Technical	Technical	Technical	Unknown
+SBS48	Technical	Technical	Technical	Unknown
+SBS49	Technical	Technical	Technical	Unknown
+SBS50	Technical	Technical	Technical	Unknown
+SBS51	Technical	Technical	Technical	Unknown
+SBS52	Technical	Technical	Technical	Unknown
+SBS53	Technical	Technical	Technical	Unknown
+SBS54	Technical	Technical	Technical	Unknown
+SBS55	Technical	Technical	Technical	Unknown
+SBS56	Technical	Technical	Technical	Unknown
+SBS57	Technical	Technical	Technical	Unknown
+SBS58	Technical	Technical	Technical	Unknown
+SBS59	Technical	Technical	Technical	Unknown
+SBS60	Technical	Technical	Technical	Unknown
+SBS84	APOBEC/AID	AID	AID	Endogenous
+SBS85	APOBEC/AID	Indirect effect of AID	AID	Endogenous
+SBS86	Chemo	Unknown chemotherapy exposure	Chemo	Environmental
+SBS87	Chemo	Thiopurine chemotherapy	Chemo	Environmental
+SBS88	Environ	Colibactin exposure	Colibactin	Environmental
+SBS89	Unknown	Unknown	SBS89	Unknown
+SBS90	Chemo	Duocarmycin exposure	Chemo	Environmental
