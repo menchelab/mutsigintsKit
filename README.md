@@ -2,7 +2,7 @@ This repository provides a toolkit for interaction analysis of mutational signat
 
 [![DOI](https://zenodo.org/badge/628922197.svg)](https://zenodo.org/doi/10.5281/zenodo.10818464)
 
-To install the package, run:
+The package can be installed in R, using:
 ```
 devtools::install_github("https://github.com/menchelab/mutsigintsKit.git")
 ```
